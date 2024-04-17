@@ -3,6 +3,7 @@ package com.diploma.panchev.apigraphql.controller.mutation;
 import com.diploma.panchev.apigraphql.*;
 import com.diploma.panchev.apigraphql.controller.mapper.GraphqlApiMapper;
 import com.diploma.panchev.apigraphql.service.AccountService;
+import com.diploma.panchev.apigraphql.service.NrfCloudService;
 import com.diploma.panchev.apigraphql.util.DataFetchersDelegateMutation;
 import graphql.schema.DataFetchingEnvironment;
 import org.mapstruct.factory.Mappers;
@@ -13,9 +14,11 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
     private static final GraphqlApiMapper MAPPER = Mappers.getMapper(GraphqlApiMapper.class);
 
     private final AccountService accountService;
+    private final NrfCloudService nrfCloudService;
 
-    public DataFetchersDelegateMutationImpl(AccountService accountService) {
+    public DataFetchersDelegateMutationImpl(AccountService accountService, NrfCloudService nrfCloudService) {
         this.accountService = accountService;
+        this.nrfCloudService = nrfCloudService;
     }
 
     @Override
@@ -27,7 +30,12 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 
     @Override
     public NrfAccountSettings setNrfCloudAccount(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String bearerToken) {
-        return null;
+        return MAPPER.map(
+                this.nrfCloudService.setNrfCloudAccount(
+                        accountId,
+                        bearerToken
+                )
+        );
     }
 
     @Override

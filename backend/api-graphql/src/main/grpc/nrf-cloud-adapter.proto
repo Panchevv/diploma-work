@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package com.diploma.panchev.grpc;
+
+option java_package = "com.diploma.panchev.nrf.grpc";
+option java_outer_classname = "NrfCloudGrpc";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+service NrfCloudService {
+  rpc SetAccountSettings(SetAccountSettingsRequest) returns (SetAccountSettingsResponse);
+  rpc RegenerateMqttSettings(RegenerateMqttSettingsRequest) returns (RegenerateMqttSettingsResponse);
+}
+
+message SetAccountSettingsRequest {
+  string account_id = 1;
+  string bearer_token = 2;
+}
+
+message SetAccountSettingsResponse {
+  AccountSettings account_settings = 1;
+}
+
+message RegenerateMqttSettingsRequest {
+  string account_id = 1;
+}
+
+message RegenerateMqttSettingsResponse {
+  MqttSettings mqtt_settings = 1;
+}
+
+message AccountSettings {
+  string account_id = 1;
+  bool active = 2;
+  google.protobuf.StringValue bearer_token = 3;
+  google.protobuf.StringValue device_id = 4;
+  google.protobuf.Timestamp modified_at = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message MqttSettings {
+  string client_id = 1;
+}
