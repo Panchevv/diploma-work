@@ -2,6 +2,7 @@ package com.diploma.panchev.apigraphql.controller.mutation;
 
 import com.diploma.panchev.apigraphql.*;
 import com.diploma.panchev.apigraphql.controller.mapper.GraphqlApiMapper;
+import com.diploma.panchev.apigraphql.service.AccountService;
 import com.diploma.panchev.apigraphql.util.DataFetchersDelegateMutation;
 import graphql.schema.DataFetchingEnvironment;
 import org.mapstruct.factory.Mappers;
@@ -11,9 +12,17 @@ import org.springframework.stereotype.Component;
 public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMutation {
     private static final GraphqlApiMapper MAPPER = Mappers.getMapper(GraphqlApiMapper.class);
 
+    private final AccountService accountService;
+
+    public DataFetchersDelegateMutationImpl(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
     @Override
     public Account createAccount(DataFetchingEnvironment dataFetchingEnvironment, String name) {
-        return null;
+        return MAPPER.map(
+                this.accountService.createAccount(name)
+        );
     }
 
     @Override
