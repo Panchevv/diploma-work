@@ -5,8 +5,11 @@ package com.diploma.panchev.grpc;
 option java_package = "com.diploma.panchev.account.grpc";
 option java_outer_classname = "AccountGrpc";
 
+import "google/protobuf/wrappers.proto";
+
 service AccountService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
+  rpc GetAccounts(GetAccountsRequest) returns(GetAccountsResponse);
 }
 
 message CreateAccountRequest {
@@ -16,6 +19,15 @@ message CreateAccountRequest {
 
 message CreateAccountResponse {
   Account account = 1;
+}
+
+message GetAccountsRequest {
+  google.protobuf.StringValue account_id = 1;
+  google.protobuf.StringValue user_id = 10;
+}
+
+message GetAccountsResponse {
+  repeated Account accounts = 1;
 }
 
 message Account {

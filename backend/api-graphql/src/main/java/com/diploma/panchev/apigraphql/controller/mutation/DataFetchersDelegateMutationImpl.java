@@ -3,11 +3,14 @@ package com.diploma.panchev.apigraphql.controller.mutation;
 import com.diploma.panchev.apigraphql.*;
 import com.diploma.panchev.apigraphql.controller.mapper.GraphqlApiMapper;
 import com.diploma.panchev.apigraphql.service.AccountService;
+import com.diploma.panchev.apigraphql.service.MeasurementService;
 import com.diploma.panchev.apigraphql.service.NrfCloudService;
 import com.diploma.panchev.apigraphql.util.DataFetchersDelegateMutation;
 import graphql.schema.DataFetchingEnvironment;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMutation {
@@ -15,10 +18,12 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 
     private final AccountService accountService;
     private final NrfCloudService nrfCloudService;
+    private final MeasurementService measurementService;
 
-    public DataFetchersDelegateMutationImpl(AccountService accountService, NrfCloudService nrfCloudService) {
+    public DataFetchersDelegateMutationImpl(AccountService accountService, NrfCloudService nrfCloudService, MeasurementService measurementService) {
         this.accountService = accountService;
         this.nrfCloudService = nrfCloudService;
+        this.measurementService = measurementService;
     }
 
     @Override
@@ -39,12 +44,17 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
     }
 
     @Override
-    public Threshold createThreshold(DataFetchingEnvironment dataFetchingEnvironment, String accountId, AgentSensorThresholdRequest request) {
-        return null;
+    public Threshold createThreshold(DataFetchingEnvironment dataFetchingEnvironment, String accountId, ThresholdRequest request) {
+        return this.accountService.getAccount(accountId)
+                .map(account ->
+                        this.measurementService.createThreshold(account.getId(), MAPPER.map(request))
+                )
+                .map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId passed"));
     }
 
     @Override
-    public Threshold editThreshold(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String id, AgentSensorThresholdRequest request) {
+    public Threshold editThreshold(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String id, ThresholdRequest request) {
         return null;
     }
 

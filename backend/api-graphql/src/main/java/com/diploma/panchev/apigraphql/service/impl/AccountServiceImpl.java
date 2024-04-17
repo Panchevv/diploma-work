@@ -6,6 +6,9 @@ import com.diploma.panchev.apigraphql.service.AccountService;
 import com.diploma.panchev.apigraphql.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class AccountServiceImpl implements AccountService {
     private final AccountAdapter accountAdapter;
@@ -22,5 +25,17 @@ public class AccountServiceImpl implements AccountService {
                 name,
                 userService.getUserId()
         );
+    }
+
+    @Override
+    public List<Account> getAccounts() {
+        return this.accountAdapter.getAccounts(userService.getUserId());
+    }
+
+    @Override
+    public Optional<Account> getAccount(String accountId) {
+        return this.getAccounts().stream()
+                .filter(current -> accountId.equals(current.getId()))
+                .findAny();
     }
 }

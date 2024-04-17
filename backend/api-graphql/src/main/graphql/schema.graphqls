@@ -46,11 +46,14 @@ type NrfAccountSettings {
 }
 
 type Threshold {
+    id: ID!
     name: String!
     groupIds: [String!]!
     measurementType: MeasurementType
     operator: ThresholdOperator!
     value: Float!
+    modifiedAt: DateTime
+    createdAt: DateTime
 }
 
 enum ThresholdOperator {
@@ -159,8 +162,8 @@ input DeviceSearch {
 type Mutation {
     createAccount(name: String!): Account!
     setNrfCloudAccount(accountId: String!, bearerToken: String!): NrfAccountSettings!
-    createThreshold(accountId: String!, request: AgentSensorThresholdRequest!): Threshold!
-    editThreshold(accountId: String!, id: ID!, request: AgentSensorThresholdRequest!): Threshold!
+    createThreshold(accountId: String!, request: ThresholdRequest!): Threshold!
+    editThreshold(accountId: String!, id: ID!, request: ThresholdRequest!): Threshold!
     deleteThreshold(accountId: String!, id: ID!): Threshold!
     createDeviceGroup(accountId: String!, name: String!): DeviceGroup!
     updateDeviceGroup(accountId: String!, groupId: String!, update: GroupUpdate): DeviceGroup!
@@ -175,7 +178,7 @@ type SubscriptionSession {
     expiresAt: DateTime!
 }
 
-input AgentSensorThresholdRequest {
+input ThresholdRequest {
     name: String!
     groupIds: [String!]
     measurementType: MeasurementType!

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package com.diploma.panchev.grpc;
+
+option java_package = "com.diploma.panchev.measurement.grpc";
+option java_outer_classname = "MeasurementGrpc";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+service ThresholdService {
+  rpc CreateThreshold(CreateThresholdRequest) returns (CreateThresholdResponse);
+}
+
+message CreateThresholdRequest {
+  string account_id = 1;
+  string name = 2;
+  repeated google.protobuf.StringValue group_ids = 3;
+
+  OperationType operator = 5;
+  MeasurementType measurement_type = 6;
+  double value  = 7;
+}
+
+message CreateThresholdResponse {
+  Threshold threshold = 1;
+}
+
+message Threshold {
+  string id = 1;
+  string account_id = 2;
+  string name = 3;
+  repeated string group_ids = 4;
+
+  OperationType operator = 5;
+  MeasurementType measurement_type = 6;
+  double value  = 7;
+
+  google.protobuf.Timestamp modified_at = 98;
+  google.protobuf.Timestamp created_at = 99;
+}
+
+enum OperationType {
+  EQUAL = 0;
+  LESS_THAN = 1;
+  GREATER_THAN = 2;
+}
+
+enum MeasurementType {
+  TEMPERATURE = 0;
+  HUMIDITY = 1;
+  AZIMUTH = 2;
+  AIR_PRESSURE = 3;
+  BATTERY_VOLTAGE = 4;
+  SPEED = 5;
+  INCLINATION = 6;
+  RSRP = 99;
+}
