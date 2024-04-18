@@ -18,4 +18,7 @@ public interface MeasurementMapper {
     @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
     @Mapping(source = "groupIdsList", target = "groupIds")
     Threshold map(MeasurementGrpc.Threshold threshold);
+
+    @Mapping(source = "threshold.groupIds", target = "groupIdsList")
+    MeasurementGrpc.EditThresholdsRequest mapEdit(String id, ThresholdNeedle threshold);
 }

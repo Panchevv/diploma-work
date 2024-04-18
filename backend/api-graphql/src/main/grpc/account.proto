@@ -10,6 +10,9 @@ import "google/protobuf/wrappers.proto";
 service AccountService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
   rpc GetAccounts(GetAccountsRequest) returns(GetAccountsResponse);
+  rpc CreateDeviceGroup(CreateDeviceGroupRequest) returns (CreateDeviceGroupResponse);
+  rpc GetDeviceGroups(GetDeviceGroupsRequest) returns (GetDeviceGroupsResponse);
+  rpc UpdateDeviceGroup(UpdateDeviceGroupRequest) returns (UpdateDeviceGroupResponse);
 }
 
 message CreateAccountRequest {
@@ -30,7 +33,47 @@ message GetAccountsResponse {
   repeated Account accounts = 1;
 }
 
+message CreateDeviceGroupRequest {
+  string account_id = 1;
+  string name = 2;
+}
+
+message CreateDeviceGroupResponse {
+  DeviceGroup device_group = 1;
+}
+
+message GetDeviceGroupsRequest {
+  string account_id = 1;
+  google.protobuf.StringValue device_group_id = 2;
+}
+
+message GetDeviceGroupsResponse {
+  repeated DeviceGroup device_groups = 1;
+}
+
+message UpdateDeviceGroupRequest {
+  string account_id = 1;
+  string group_id = 2;
+
+  DeviceGroupUpdate update = 9;
+}
+
+message UpdateDeviceGroupResponse {
+  DeviceGroup device_group = 1;
+}
+
 message Account {
   string id = 1;
+  string name = 2;
+}
+
+message DeviceGroup {
+  string id = 1;
+  string name = 2;
+
+  Account account = 5;
+}
+
+message DeviceGroupUpdate {
   string name = 2;
 }

@@ -5,6 +5,7 @@ import com.diploma.panchev.account.grpc.AccountServiceGrpc;
 import com.diploma.panchev.apigraphql.adapter.account.AccountAdapter;
 import com.diploma.panchev.apigraphql.adapter.account.mapper.AccountMapper;
 import com.diploma.panchev.apigraphql.domain.Account;
+import com.diploma.panchev.apigraphql.domain.DeviceGroup;
 import com.google.protobuf.StringValue;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
@@ -47,5 +48,51 @@ public class AccountAdapterImpl implements AccountAdapter {
                 .flatMap(response -> response.getAccountsList().stream())
                 .map(MAPPER::map)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public DeviceGroup createDeviceGroup(String accountId, String name) {
+        return MAPPER.map(
+                this.grpcApi.createDeviceGroup(
+                        AccountGrpc.CreateDeviceGroupRequest.newBuilder()
+                                .setAccountId(accountId)
+                                .setName(name)
+                                .build()
+                ).getDeviceGroup()
+        );
+    }
+
+    @Override
+    public Optional<DeviceGroup> getDeviceGroup(String accountId, String deviceGroupId) {
+        return Optional.ofNullable(
+                        this.grpcApi.getDeviceGroups(
+                                AccountGrpc.GetDeviceGroupsRequest.newBuilder()
+                                        .setAccountId(accountId)
+                                        .setDeviceGroupId(StringValue.of(deviceGroupId))
+                                        .build()
+                        )
+                )
+                .flatMap(response -> response.getDeviceGroupsCount() != 1 ?
+                        Optional.empty() : Optional.of(response.getDeviceGroups(0)))
+                .map(MAPPER::map);
+    }
+
+    @Override
+    public DeviceGroup updateDeviceGroup(String accountId, String deviceGroupId, String name) {
+        return Optional.ofNullable(
+                        this.grpcApi.updateDeviceGroup(
+                                AccountGrpc.UpdateDeviceGroupRequest.newBuilder()
+                                        .setAccountId(accountId)
+                                        .setGroupId(deviceGroupId)
+                                        .setUpdate(
+                                                AccountGrpc.DeviceGroupUpdate.newBuilder()
+                                                        .setName(name)
+                                        )
+                                        .build()
+                        )
+                )
+                .map(AccountGrpc.UpdateDeviceGroupResponse::getDeviceGroup)
+                .map(MAPPER::map)
+                .orElseThrow();
     }
 }

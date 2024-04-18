@@ -1,9 +1,7 @@
 package com.diploma.panchev.apigraphql.controller.mapper;
 
-import com.diploma.panchev.apigraphql.domain.Account;
-import com.diploma.panchev.apigraphql.domain.NrfAccountSettings;
-import com.diploma.panchev.apigraphql.domain.Threshold;
-import com.diploma.panchev.apigraphql.domain.ThresholdNeedle;
+import com.diploma.panchev.apigraphql.domain.*;
+import com.diploma.panchev.apigraphql.domain.graphql.query.DeviceGroupInternal;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 
@@ -16,4 +14,6 @@ public interface GraphqlApiMapper {
     ThresholdNeedle map(com.diploma.panchev.apigraphql.ThresholdRequest request);
 
     com.diploma.panchev.apigraphql.Threshold map(Threshold threshold);
+
+    DeviceGroupInternal map(DeviceGroup account);
 }

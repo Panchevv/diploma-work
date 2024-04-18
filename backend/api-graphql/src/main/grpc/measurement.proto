@@ -10,19 +10,41 @@ import "google/protobuf/timestamp.proto";
 
 service ThresholdService {
   rpc CreateThreshold(CreateThresholdRequest) returns (CreateThresholdResponse);
+  rpc EditThreshold(EditThresholdsRequest) returns (EditThresholdsResponse);
+  rpc DeleteThreshold(DeleteThresholdRequest) returns (DeleteThresholdResponse);
 }
 
 message CreateThresholdRequest {
   string account_id = 1;
   string name = 2;
   repeated google.protobuf.StringValue group_ids = 3;
-
   OperationType operator = 5;
   MeasurementType measurement_type = 6;
-  double value  = 7;
+  double value = 7;
 }
 
 message CreateThresholdResponse {
+  Threshold threshold = 1;
+}
+
+message EditThresholdsRequest {
+  string id = 1;
+  string name = 2;
+  repeated google.protobuf.StringValue group_ids = 3;
+  OperationType operator = 4;
+  MeasurementType measurement_type = 5;
+  double value = 6;
+}
+
+message EditThresholdsResponse {
+  Threshold threshold = 1;
+}
+
+message DeleteThresholdRequest {
+  string id = 1;
+}
+
+message DeleteThresholdResponse {
   Threshold threshold = 1;
 }
 
@@ -31,11 +53,9 @@ message Threshold {
   string account_id = 2;
   string name = 3;
   repeated string group_ids = 4;
-
   OperationType operator = 5;
   MeasurementType measurement_type = 6;
-  double value  = 7;
-
+  double value = 7;
   google.protobuf.Timestamp modified_at = 98;
   google.protobuf.Timestamp created_at = 99;
 }

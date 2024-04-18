@@ -3,6 +3,7 @@ package com.diploma.panchev.apigraphql.controller.mutation;
 import com.diploma.panchev.apigraphql.*;
 import com.diploma.panchev.apigraphql.controller.mapper.GraphqlApiMapper;
 import com.diploma.panchev.apigraphql.service.AccountService;
+import com.diploma.panchev.apigraphql.service.DeviceService;
 import com.diploma.panchev.apigraphql.service.MeasurementService;
 import com.diploma.panchev.apigraphql.service.NrfCloudService;
 import com.diploma.panchev.apigraphql.util.DataFetchersDelegateMutation;
@@ -19,11 +20,13 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
     private final AccountService accountService;
     private final NrfCloudService nrfCloudService;
     private final MeasurementService measurementService;
+    private final DeviceService deviceService;
 
-    public DataFetchersDelegateMutationImpl(AccountService accountService, NrfCloudService nrfCloudService, MeasurementService measurementService) {
+    public DataFetchersDelegateMutationImpl(AccountService accountService, NrfCloudService nrfCloudService, MeasurementService measurementService, DeviceService deviceService) {
         this.accountService = accountService;
         this.nrfCloudService = nrfCloudService;
         this.measurementService = measurementService;
+        this.deviceService = deviceService;
     }
 
     @Override
@@ -55,22 +58,39 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 
     @Override
     public Threshold editThreshold(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String id, ThresholdRequest request) {
-        return null;
+        return this.accountService.getAccount(accountId)
+                .map(account ->
+                        this.measurementService.editThreshold(id, MAPPER.map(request))
+                )
+                .map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId passed"));
     }
 
     @Override
     public Threshold deleteThreshold(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String id) {
-        return null;
+        return this.accountService.getAccount(accountId)
+                .map(account ->
+                        this.measurementService.deleteThreshold(id)
+                )
+                .map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId passed"));
     }
 
     @Override
     public DeviceGroup createDeviceGroup(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String name) {
-        return null;
+        return MAPPER.map(
+                this.deviceService.createDeviceGroup(accountId, name)
+        );
     }
 
     @Override
     public DeviceGroup updateDeviceGroup(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String groupId, GroupUpdate update) {
-        return null;
+        return this.deviceService.getDeviceGroup(accountId, groupId)
+                .map(deviceGroup ->
+                        this.deviceService.updateDeviceGroup(deviceGroup.getAccountId(), deviceGroup.getId(), update.getName())
+                )
+                .map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId and groupId passed"));
     }
 
     @Override

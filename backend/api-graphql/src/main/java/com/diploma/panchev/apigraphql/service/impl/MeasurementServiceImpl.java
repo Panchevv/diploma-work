@@ -18,4 +18,14 @@ public class MeasurementServiceImpl implements MeasurementService {
     public Threshold createThreshold(String accountId, ThresholdNeedle threshold) {
         return this.measurementAdapter.createThreshold(accountId, threshold);
     }
+
+    @Override
+    public Threshold editThreshold(String id, ThresholdNeedle threshold) {
+        return this.measurementAdapter.editThreshold(id, threshold);
+    }
+
+    @Override
+    public Threshold deleteThreshold(String id) {
+        return this.measurementAdapter.deleteThreshold(id);
+    }
 }
