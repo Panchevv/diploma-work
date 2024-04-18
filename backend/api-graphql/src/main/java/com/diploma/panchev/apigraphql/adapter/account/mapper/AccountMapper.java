@@ -2,6 +2,7 @@ package com.diploma.panchev.apigraphql.adapter.account.mapper;
 
 import com.diploma.panchev.account.grpc.AccountGrpc;
 import com.diploma.panchev.apigraphql.domain.Account;
+import com.diploma.panchev.apigraphql.domain.Device;
 import com.diploma.panchev.apigraphql.domain.DeviceGroup;
 import com.diploma.panchev.apigraphql.utils.ProtobufMapper;
 import org.mapstruct.CollectionMappingStrategy;
@@ -19,4 +20,8 @@ public interface AccountMapper {
 
     @Mapping(source = "account.id", target = "accountId")
     DeviceGroup map(AccountGrpc.DeviceGroup group);
+
+    @Mapping(source = "account.id", target = "accountId")
+    @Mapping(source = "group.id", target = "groupId")
+    Device map(AccountGrpc.AccountDevice device);
 }

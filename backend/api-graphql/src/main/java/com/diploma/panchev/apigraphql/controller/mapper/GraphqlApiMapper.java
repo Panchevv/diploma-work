@@ -16,4 +16,6 @@ public interface GraphqlApiMapper {
     com.diploma.panchev.apigraphql.Threshold map(Threshold threshold);
 
     DeviceGroupInternal map(DeviceGroup account);
+
+    com.diploma.panchev.apigraphql.SubscriptionSession map(SubscriptionSession subscriptionSession);
 }

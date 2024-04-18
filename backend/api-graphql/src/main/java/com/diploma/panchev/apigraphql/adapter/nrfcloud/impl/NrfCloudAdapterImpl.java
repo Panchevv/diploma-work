@@ -48,4 +48,15 @@ public class NrfCloudAdapterImpl implements NrfCloudAdapter {
                 .map(NrfCloudGrpc.RegenerateMqttSettingsResponse::getMqttSettings)
                 .map(MAPPER::map);
     }
+
+    @Override
+    public String setSensorConfiguration(String accountId, String groupId, String deviceId) {
+        return this.grpcApi.setSensorConfiguration(
+                NrfCloudGrpc.SetSensorConfigurationRequest.newBuilder()
+                        .setAccountId(accountId)
+                        .setGroupId(groupId)
+                        .setDeviceId(deviceId)
+                        .build()
+        ).getDeviceId();
+    }
 }

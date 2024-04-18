@@ -5,6 +5,7 @@ import com.diploma.panchev.account.grpc.AccountServiceGrpc;
 import com.diploma.panchev.apigraphql.adapter.account.AccountAdapter;
 import com.diploma.panchev.apigraphql.adapter.account.mapper.AccountMapper;
 import com.diploma.panchev.apigraphql.domain.Account;
+import com.diploma.panchev.apigraphql.domain.Device;
 import com.diploma.panchev.apigraphql.domain.DeviceGroup;
 import com.google.protobuf.StringValue;
 import org.mapstruct.factory.Mappers;
@@ -94,5 +95,33 @@ public class AccountAdapterImpl implements AccountAdapter {
                 .map(AccountGrpc.UpdateDeviceGroupResponse::getDeviceGroup)
                 .map(MAPPER::map)
                 .orElseThrow();
+    }
+
+    @Override
+    public Optional<Device> getAccountDevice(String accountId, String deviceId) {
+        return Optional.ofNullable(
+                        this.grpcApi.getAccountDevice(
+                                AccountGrpc.GetAccountDeviceRequest.newBuilder()
+                                        .setAccountId(accountId)
+                                        .setDeviceId(deviceId)
+                                        .build()
+                        )
+                )
+                .filter(AccountGrpc.GetAccountDeviceResponse::hasDevice)
+                .map(AccountGrpc.GetAccountDeviceResponse::getDevice)
+                .map(MAPPER::map);
+    }
+
+    @Override
+    public Device assignDevice(String accountId, String groupId, String deviceId) {
+        return MAPPER.map(
+                this.grpcApi.assignAccountDevice(
+                        AccountGrpc.AssignAccountDeviceRequest.newBuilder()
+                                .setAccountId(accountId)
+                                .setGroupId(groupId)
+                                .setDeviceId(deviceId)
+                                .buildPartial()
+                ).getDevice()
+        );
     }
 }

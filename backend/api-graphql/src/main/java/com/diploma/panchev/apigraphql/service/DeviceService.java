@@ -1,6 +1,8 @@
 package com.diploma.panchev.apigraphql.service;
 
+import com.diploma.panchev.apigraphql.domain.Device;
 import com.diploma.panchev.apigraphql.domain.DeviceGroup;
+import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
 
 import java.util.Optional;
 
@@ -10,4 +12,10 @@ public interface DeviceService {
     Optional<DeviceGroup> getDeviceGroup(String accountId, String id);
 
     DeviceGroup updateDeviceGroup(String accountId, String groupId, String name);
+
+    SubscriptionSession generateSubscriptionSession(String accountId, String groupId);
+
+    Optional<Device> getAccountDevice(String accountId, String deviceId);
+
+    Device assignDeviceGroup(String accountId, String groupId, String deviceId);
 }

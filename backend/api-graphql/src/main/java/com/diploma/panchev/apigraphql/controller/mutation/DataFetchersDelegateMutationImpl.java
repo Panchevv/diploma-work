@@ -95,12 +95,29 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 
     @Override
     public SubscriptionSession createDeviceGroupSubscription(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String groupId) {
-        return null;
+        return this.deviceService.getDeviceGroup(accountId, groupId)
+                .map(deviceGroup ->
+                        this.deviceService.generateSubscriptionSession(
+                                deviceGroup.getAccountId(),
+                                deviceGroup.getId()
+                        )
+                )
+                .map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId and groupId passed"));
     }
 
     @Override
     public DeviceGroup assignDeviceDeviceGroup(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String deviceId, String groupId) {
-        return null;
+        return this.deviceService.getAccountDevice(accountId, deviceId)
+                .flatMap(device ->
+                        this.deviceService.getDeviceGroup(accountId, groupId)
+                )
+                .map(group -> {
+                    this.deviceService.assignDeviceGroup(accountId, group.getId(), deviceId);
+                    return group;
+                })
+                .map(MAPPER::map)
+                .orElseThrow();
     }
 
     @Override

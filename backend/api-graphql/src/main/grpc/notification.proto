@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.diploma.panchev.grpc;
+
+option java_package = "com.diploma.panchev.notification.grpc";
+option java_outer_classname = "NotificationGrpc";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+service PushStreamService {
+  rpc CreateStream(CreateStreamRequest) returns (CreateStreamResponse);
+}
+
+message CreateStreamRequest {
+  string account_id = 1;
+  string group_id = 2;
+}
+
+message CreateStreamResponse {
+  string stream_id = 1;
+  google.protobuf.Timestamp expires_at = 2;
+}

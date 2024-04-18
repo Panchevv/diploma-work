@@ -11,6 +11,7 @@ import "google/protobuf/timestamp.proto";
 service NrfCloudService {
   rpc SetAccountSettings(SetAccountSettingsRequest) returns (SetAccountSettingsResponse);
   rpc RegenerateMqttSettings(RegenerateMqttSettingsRequest) returns (RegenerateMqttSettingsResponse);
+  rpc SetSensorConfiguration(SetSensorConfigurationRequest) returns (SetSensorConfigurationResponse);
 }
 
 message SetAccountSettingsRequest {
@@ -28,6 +29,18 @@ message RegenerateMqttSettingsRequest {
 
 message RegenerateMqttSettingsResponse {
   MqttSettings mqtt_settings = 1;
+}
+
+message SetSensorConfigurationRequest {
+  string account_id = 1;
+  string group_id = 2;
+  string device_id = 3;
+}
+
+message SetSensorConfigurationResponse {
+  string account_id = 1;
+  string group_id = 2;
+  string device_id = 3;
 }
 
 message AccountSettings {
