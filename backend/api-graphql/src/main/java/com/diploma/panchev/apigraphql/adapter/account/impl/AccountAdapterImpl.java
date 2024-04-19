@@ -205,4 +205,36 @@ public class AccountAdapterImpl implements AccountAdapter {
                 })
                 .orElseGet(Connection::new);
     }
+
+    @Override
+    public List<Device> getAccountGroupDevices(String accountId, String deviceGroupId) {
+        return Optional.ofNullable(
+                        this.grpcApi.getDeviceGroupDevices(
+                                AccountGrpc.GetDeviceGroupDevicesRequest.newBuilder()
+                                        .setAccountId(StringValue.of(accountId))
+                                        .setDeviceGroupId(deviceGroupId)
+                                        .build()
+                        )
+                )
+                .stream()
+                .flatMap(response -> response.getDevicesList().stream())
+                .map(MAPPER::map)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Device> getAccountGroupDevice(String accountId, String deviceGroupId, String deviceId) {
+        return Optional.ofNullable(
+                        this.grpcApi.getDeviceGroupDevices(
+                                AccountGrpc.GetDeviceGroupDevicesRequest.newBuilder()
+                                        .setAccountId(StringValue.of(accountId))
+                                        .setDeviceGroupId(deviceGroupId)
+                                        .setDeviceId(StringValue.of(deviceId))
+                                        .build()
+                        )
+                )
+                .flatMap(response -> response.getDevicesCount() != 1 ?
+                        Optional.empty() : Optional.of(response.getDevices(0)))
+                .map(MAPPER::map);
+    }
 }

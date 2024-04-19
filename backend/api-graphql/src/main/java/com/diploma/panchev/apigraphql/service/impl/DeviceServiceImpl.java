@@ -5,6 +5,7 @@ import com.diploma.panchev.apigraphql.adapter.notification.NotificationAdapter;
 import com.diploma.panchev.apigraphql.adapter.nrfcloud.NrfCloudAdapter;
 import com.diploma.panchev.apigraphql.domain.Device;
 import com.diploma.panchev.apigraphql.domain.DeviceGroup;
+import com.diploma.panchev.apigraphql.domain.Notification;
 import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
 import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
 import com.diploma.panchev.apigraphql.service.DeviceService;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -89,5 +91,25 @@ public class DeviceServiceImpl implements DeviceService {
                 connection.getEdges()
         );
         return deviceConnection;
+    }
+
+    @Override
+    public List<Device> getAccountDevices(String accountId, String deviceGroupId) {
+        return this.accountAdapter.getAccountGroupDevices(accountId, deviceGroupId).stream()
+                        .filter(Objects::nonNull)
+                        .toList();
+    }
+
+    @Override
+    public Optional<Device> getAccountGroupDevice(String accountId, String deviceGroupId, String deviceId) {
+        return this.accountAdapter.getAccountGroupDevice(accountId, deviceGroupId, deviceId)
+                .stream()
+                .filter(device -> Objects.equals(device.getDeviceId(), deviceId))
+                .findAny();
+    }
+
+    @Override
+    public List<Notification> getNotificationHistory(String groupId, Integer pageSize, String last, String deviceId) {
+        return this.notificationAdapter.getNotificationHistory(groupId, pageSize, last, deviceId);
     }
 }

@@ -32,4 +32,6 @@ public interface GraphqlApiMapper {
         edge.setNode(map(device));
         return edge;
     }
+
+    com.diploma.panchev.apigraphql.Notification map(Notification notification);
 }

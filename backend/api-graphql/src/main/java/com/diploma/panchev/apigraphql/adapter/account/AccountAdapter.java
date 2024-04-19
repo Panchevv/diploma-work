@@ -30,4 +30,8 @@ public interface AccountAdapter {
     List<DeviceGroup> getDeviceGroups(String accountId);
 
     Connection<Device> getAccountDevices(String accountId, Boolean ungrouped, String fromDeviceId, int pageSize);
+
+    List<Device> getAccountGroupDevices(String accountId, String deviceGroupId);
+
+    Optional<Device> getAccountGroupDevice(String accountId, String deviceGroupId, String deviceId);
 }

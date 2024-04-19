@@ -2,6 +2,7 @@ package com.diploma.panchev.apigraphql.service;
 
 import com.diploma.panchev.apigraphql.domain.Device;
 import com.diploma.panchev.apigraphql.domain.DeviceGroup;
+import com.diploma.panchev.apigraphql.domain.Notification;
 import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
 import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
 
@@ -28,4 +29,10 @@ public interface DeviceService {
     List<DeviceGroup> getDeviceGroups(String accountId);
 
     Connection<Device> getAccountDevices(String accountId, Boolean ungrouped, String fromDeviceId, int pageSize);
+
+    List<Device> getAccountDevices(String accountId, String deviceGroupId);
+
+    Optional<Device> getAccountGroupDevice(String accountId, String deviceGroupId, String deviceId);
+
+    List<Notification> getNotificationHistory(String groupId, Integer pageSize, String last, String deviceId);
 }

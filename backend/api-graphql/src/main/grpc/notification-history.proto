@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package com.diploma.panchev.notification.history.grpc;
+
+option java_package = "com.diploma.panchev.notification.history.grpc";
+option java_outer_classname = "NotificationHistoryGrpc";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+service NotificationHistoryService {
+  rpc GetNotificationHistory(GetNotificationHistoryRequest) returns (GetNotificationHistoryResponse);
+}
+
+message GetNotificationHistoryRequest {
+  string group_id = 1;
+  google.protobuf.Int32Value page_size = 2;
+  google.protobuf.StringValue last = 3;
+  google.protobuf.StringValue device_id = 4;
+}
+
+message GetNotificationHistoryResponse {
+  google.protobuf.Int32Value page_size = 2;
+  google.protobuf.StringValue last = 3;
+  repeated Event events = 5;
+}
+
+message Event {
+  string id = 1;
+
+  string device_id = 4;
+  string group_id = 5;
+
+  google.protobuf.Timestamp triggered_at = 9;
+  google.protobuf.Timestamp seen_at = 10;
+
+  MeasurementThreshold threshold = 91;
+}
+
+message MeasurementThreshold {
+  string id = 1;
+  string threshold_name = 2;
+  MeasurementType type = 4;
+  double value = 5;
+
+  OperationType operator = 8;
+  double threshold = 9;
+}
+
+enum MeasurementType{
+  TEMPERATURE = 0;
+  HUMIDITY = 1;
+  AIR_PRESSURE = 2;
+  BATTERY_VOLTAGE = 3;
+  SPEED = 4;
+  INCLINATION = 6;
+  AZIMUTH = 7;
+  RSRP = 21;
+}
+
+enum OperationType {
+  EQUAL = 0;
+  LESS_THAN = 1;
+  GREATER_THAN = 2;
+}

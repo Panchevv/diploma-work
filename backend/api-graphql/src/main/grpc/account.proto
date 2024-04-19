@@ -19,6 +19,7 @@ service AccountService {
   rpc CreateAccountDevice(CreateAccountDeviceRequest) returns (CreateAccountDeviceResponse);
   rpc UpdateAccountDevice(UpdateAccountDeviceRequest) returns (UpdateAccountDeviceResponse);
   rpc GetAccountDevices(GetAccountDevicesRequest) returns(GetAccountDevicesResponse);
+  rpc GetDeviceGroupDevices(GetDeviceGroupDevicesRequest) returns (GetDeviceGroupDevicesResponse);
 }
 
 message CreateAccountRequest {
@@ -121,6 +122,16 @@ message GetAccountDevicesResponse {
   repeated AccountDevice devices = 1;
 
   PageInfo page_info = 99;
+}
+
+message GetDeviceGroupDevicesRequest {
+  string device_group_id = 1;
+  google.protobuf.StringValue account_id = 2;
+  google.protobuf.StringValue device_id = 3;
+}
+
+message GetDeviceGroupDevicesResponse {
+  repeated AccountDevice devices = 1;
 }
 
 message Account {
