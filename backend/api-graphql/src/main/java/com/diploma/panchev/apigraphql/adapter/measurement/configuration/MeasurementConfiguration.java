@@ -1,6 +1,7 @@
 package com.diploma.panchev.apigraphql.adapter.measurement.configuration;
 
 import com.diploma.panchev.apigraphql.utils.Utils;
+import com.diploma.panchev.measurement.grpc.MeasurementServiceGrpc;
 import com.diploma.panchev.measurement.grpc.ThresholdServiceGrpc;
 import io.grpc.ManagedChannel;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +20,11 @@ public class MeasurementConfiguration {
         return Utils.createManagedChannel(properties);
     }
 
-//    @Bean
-//    public MeasurementServiceGrpc.MeasurementServiceBlockingStub getMeasurementServiceBlockStub(
-//            @Qualifier(MEASUREMENT_MANAGED_CHANNEL_BEAN) ManagedChannel channel) {
-//        return MeasurementServiceGrpc.newBlockingStub(channel);
-//    }
+    @Bean
+    public MeasurementServiceGrpc.MeasurementServiceBlockingStub getMeasurementServiceBlockStub(
+            @Qualifier(MEASUREMENT_MANAGED_CHANNEL_BEAN) ManagedChannel channel) {
+        return MeasurementServiceGrpc.newBlockingStub(channel);
+    }
 
     @Bean
     public ThresholdServiceGrpc.ThresholdServiceBlockingStub getThresholdServiceBlockStub(

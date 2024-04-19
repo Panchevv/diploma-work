@@ -11,6 +11,9 @@ import java.util.concurrent.CompletableFuture;
 
 @Component
 public class DataFetchersDelegateMeasurementEdgeImpl implements DataFetchersDelegateMeasurementEdge {
+    public DataFetchersDelegateMeasurementEdgeImpl() {
+    }
+
     @Override
     public CompletableFuture<Measurement> node(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<String, Measurement> dataLoader, MeasurementEdge origin) {
         return CompletableFuture.supplyAsync(() -> this.node(dataFetchingEnvironment, origin));

@@ -34,4 +34,17 @@ public interface GraphqlApiMapper {
     }
 
     com.diploma.panchev.apigraphql.Notification map(Notification notification);
+
+    MeasurementType map(com.diploma.panchev.apigraphql.MeasurementType measurementType);
+
+    com.diploma.panchev.apigraphql.DeviceMeasurement mapDeviceMeasurement(String id, Measurement measurement);
+
+    com.diploma.panchev.apigraphql.MeasurementConnection mapMeasurements(Connection<Measurement> history);
+
+    @Mapping(target = "node.id", source = "id")
+    @Mapping(target = "node.deviceId", source = "deviceId")
+    @Mapping(target = "node.type", source = "type")
+    @Mapping(target = "node.value", source = "value")
+    @Mapping(target = "node.when", source = "when")
+    com.diploma.panchev.apigraphql.MeasurementEdge mapEdge(Measurement measurement);
 }

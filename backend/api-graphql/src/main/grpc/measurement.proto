@@ -7,12 +7,42 @@ option java_outer_classname = "MeasurementGrpc";
 
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+service MeasurementService {
+  rpc GetLastMeasurements(GetLastMeasurementsRequest) returns (GetLastMeasurementsResponse);
+  rpc GetMeasurementHistory(GetMeasurementHistoryRequest) returns (GetMeasurementHistoryResponse);
+}
 
 service ThresholdService {
   rpc CreateThreshold(CreateThresholdRequest) returns (CreateThresholdResponse);
   rpc EditThreshold(EditThresholdsRequest) returns (EditThresholdsResponse);
   rpc DeleteThreshold(DeleteThresholdRequest) returns (DeleteThresholdResponse);
   rpc GetThresholds(GetThresholdsRequest) returns (GetThresholdsResponse);
+}
+
+message GetLastMeasurementsRequest {
+  google.protobuf.StringValue device_id = 1;
+  repeated MeasurementType type = 2;
+}
+
+message GetLastMeasurementsResponse {
+  repeated Measurement measurements = 1;
+}
+
+message GetMeasurementHistoryRequest {
+  google.protobuf.StringValue device_id = 1;
+  MeasurementType type = 2;
+  google.protobuf.Timestamp created_at_from = 5;
+  google.protobuf.Timestamp created_at_to = 6;
+
+  Pagination pagination = 99;
+}
+
+message GetMeasurementHistoryResponse {
+  repeated Measurement measurements = 1;
+
+  PageInfo page_info = 99;
 }
 
 message CreateThresholdRequest {
@@ -67,6 +97,16 @@ message Threshold {
   double value = 7;
   google.protobuf.Timestamp modified_at = 98;
   google.protobuf.Timestamp created_at = 99;
+}
+
+message Measurement {
+  string id = 1;
+  string device_id = 2;
+
+  MeasurementType type = 3;
+  double value = 4;
+
+  google.protobuf.Timestamp when = 99;
 }
 
 enum OperationType {
