@@ -18,4 +18,8 @@ public interface DeviceService {
     Optional<Device> getAccountDevice(String accountId, String deviceId);
 
     Device assignDeviceGroup(String accountId, String groupId, String deviceId);
+
+    Device createDevice(String accountId, String groupId, String deviceId, String name);
+
+    Device updateDevice(String accountId, String deviceId, String name);
 }

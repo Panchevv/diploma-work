@@ -21,4 +21,8 @@ public interface AccountAdapter {
     Optional<Device> getAccountDevice(String accountId, String deviceId);
 
     Device assignDevice(String accountId, String groupId, String deviceId);
+
+    Device createAccountDevice(String accountId, String deviceId, String name);
+
+    Device updateDevice(String accountId, String deviceId, String name);
 }

@@ -4,6 +4,7 @@ import com.diploma.panchev.apigraphql.domain.*;
 import com.diploma.panchev.apigraphql.domain.graphql.query.DeviceGroupInternal;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper( builder = @Builder( disableBuilder = true ) )
 public interface GraphqlApiMapper {
@@ -18,4 +19,7 @@ public interface GraphqlApiMapper {
     DeviceGroupInternal map(DeviceGroup account);
 
     com.diploma.panchev.apigraphql.SubscriptionSession map(SubscriptionSession subscriptionSession);
+
+    @Mapping(target = "id", source = "deviceId")
+    com.diploma.panchev.apigraphql.Device map(Device device);
 }

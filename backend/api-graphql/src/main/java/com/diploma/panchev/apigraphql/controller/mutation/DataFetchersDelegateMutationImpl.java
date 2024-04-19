@@ -122,11 +122,28 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 
     @Override
     public Device createDevice(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String deviceId, String groupId, DeviceRequest request) {
-        return null;
+        return this.accountService.getAccount(accountId)
+                .map(account ->
+                        this.deviceService.createDevice(
+                                account.getId(),
+                                groupId,
+                                deviceId,
+                                request.getName()
+                        )
+                ).map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId passed"));
     }
 
     @Override
     public Device updateDevice(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String deviceId, DeviceUpdate update) {
-        return null;
+        return this.deviceService.getAccountDevice(accountId, deviceId)
+                .map(device ->
+                        this.deviceService.updateDevice(
+                                accountId,
+                                device.getId(),
+                                update.getName()
+                        )
+                ).map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId and deviceId passed"));
     }
 }

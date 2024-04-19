@@ -124,4 +124,30 @@ public class AccountAdapterImpl implements AccountAdapter {
                 ).getDevice()
         );
     }
+
+    @Override
+    public Device createAccountDevice(String accountId, String deviceId, String name) {
+        return MAPPER.map(
+                this.grpcApi.createAccountDevice(
+                        AccountGrpc.CreateAccountDeviceRequest.newBuilder()
+                                .setAccountId(accountId)
+                                .setDeviceId(deviceId)
+                                .setName(name)
+                                .build()
+                ).getDevice()
+        );
+    }
+
+    @Override
+    public Device updateDevice(String accountId, String deviceId, String name) {
+        return MAPPER.map(
+                this.grpcApi.updateAccountDevice(
+                        AccountGrpc.UpdateAccountDeviceRequest.newBuilder()
+                                .setAccountId(accountId)
+                                .setDeviceId(deviceId)
+                                .setUpdate(AccountGrpc.DeviceUpdate.newBuilder().setName(name))
+                                .build()
+                ).getDevice()
+        );
+    }
 }

@@ -60,4 +60,15 @@ public class DeviceServiceImpl implements DeviceService {
         this.nrfCloudAdapter.setSensorConfiguration(accountId, groupId, deviceId);
         return device;
     }
+
+    @Override
+    public Device createDevice(String accountId, String groupId, String deviceId, String name) {
+        this.accountAdapter.createAccountDevice(accountId, deviceId, name);
+        return this.assignDeviceGroup(accountId, groupId, deviceId);
+    }
+
+    @Override
+    public Device updateDevice(String accountId, String deviceId, String name) {
+        return this.accountAdapter.updateDevice(accountId, deviceId, name);
+    }
 }

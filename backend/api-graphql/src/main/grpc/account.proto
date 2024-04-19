@@ -15,6 +15,8 @@ service AccountService {
   rpc UpdateDeviceGroup(UpdateDeviceGroupRequest) returns (UpdateDeviceGroupResponse);
   rpc GetAccountDevice(GetAccountDeviceRequest) returns(GetAccountDeviceResponse);
   rpc AssignAccountDevice(AssignAccountDeviceRequest) returns (AssignAccountDeviceResponse);
+  rpc CreateAccountDevice(CreateAccountDeviceRequest) returns (CreateAccountDeviceResponse);
+  rpc UpdateAccountDevice(UpdateAccountDeviceRequest) returns (UpdateAccountDeviceResponse);
 }
 
 message CreateAccountRequest {
@@ -84,6 +86,27 @@ message AssignAccountDeviceResponse {
   AccountDevice device = 1;
 }
 
+message CreateAccountDeviceRequest {
+  string accountId = 1;
+  string deviceId = 2;
+  string name = 3;
+}
+
+message CreateAccountDeviceResponse {
+  AccountDevice device = 1;
+}
+
+message UpdateAccountDeviceRequest {
+  string account_id = 1;
+  string device_id = 2;
+
+  DeviceUpdate update = 9;
+}
+
+message UpdateAccountDeviceResponse {
+  AccountDevice device = 1;
+}
+
 message Account {
   string id = 1;
   string name = 2;
@@ -106,4 +129,8 @@ message AccountDevice {
   Account account = 3;
   DeviceGroup group = 4;
   string device_id = 5;
+}
+
+message DeviceUpdate {
+  string name = 2;
 }
