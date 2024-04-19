@@ -11,4 +11,6 @@ public interface NrfCloudAdapter {
     Optional<MqttSettings> regenerateMqttSettings(String accountId);
 
     String setSensorConfiguration(String accountId, String groupId, String deviceId);
+
+    Optional<NrfAccountSettings> getAccountSettings(String accountId);
 }

@@ -59,4 +59,18 @@ public class NrfCloudAdapterImpl implements NrfCloudAdapter {
                         .build()
         ).getDeviceId();
     }
+
+    @Override
+    public Optional<NrfAccountSettings> getAccountSettings(String accountId) {
+        return Optional.ofNullable(
+                        this.grpcApi.getAccountSetting(
+                                NrfCloudGrpc.GetAccountSettingRequest.newBuilder()
+                                        .setAccountId(accountId)
+                                        .build()
+                        )
+                )
+                .filter(NrfCloudGrpc.GetAccountSettingResponse::hasAccountSettings)
+                .map(NrfCloudGrpc.GetAccountSettingResponse::getAccountSettings)
+                .map(MAPPER::map);
+    }
 }

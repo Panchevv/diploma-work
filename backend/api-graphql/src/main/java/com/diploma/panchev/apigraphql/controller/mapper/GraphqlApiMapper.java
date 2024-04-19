@@ -1,6 +1,7 @@
 package com.diploma.panchev.apigraphql.controller.mapper;
 
 import com.diploma.panchev.apigraphql.domain.*;
+import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
 import com.diploma.panchev.apigraphql.domain.graphql.query.DeviceGroupInternal;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -22,4 +23,13 @@ public interface GraphqlApiMapper {
 
     @Mapping(target = "id", source = "deviceId")
     com.diploma.panchev.apigraphql.Device map(Device device);
+
+    com.diploma.panchev.apigraphql.DeviceConnection mapDevices(Connection<Device> history);
+
+    default com.diploma.panchev.apigraphql.DeviceEdge mapDeviceEdge(Device device) {
+        com.diploma.panchev.apigraphql.DeviceEdge edge = new com.diploma.panchev.apigraphql.DeviceEdge();
+        edge.setCursor(device.getId());
+        edge.setNode(map(device));
+        return edge;
+    }
 }

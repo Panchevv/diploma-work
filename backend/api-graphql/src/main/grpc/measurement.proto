@@ -12,6 +12,7 @@ service ThresholdService {
   rpc CreateThreshold(CreateThresholdRequest) returns (CreateThresholdResponse);
   rpc EditThreshold(EditThresholdsRequest) returns (EditThresholdsResponse);
   rpc DeleteThreshold(DeleteThresholdRequest) returns (DeleteThresholdResponse);
+  rpc GetThresholds(GetThresholdsRequest) returns (GetThresholdsResponse);
 }
 
 message CreateThresholdRequest {
@@ -46,6 +47,14 @@ message DeleteThresholdRequest {
 
 message DeleteThresholdResponse {
   Threshold threshold = 1;
+}
+
+message GetThresholdsRequest {
+  string account_id = 1;
+}
+
+message GetThresholdsResponse {
+  repeated Threshold thresholds = 1;
 }
 
 message Threshold {

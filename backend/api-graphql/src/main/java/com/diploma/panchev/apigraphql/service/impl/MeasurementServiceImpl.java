@@ -6,6 +6,8 @@ import com.diploma.panchev.apigraphql.domain.ThresholdNeedle;
 import com.diploma.panchev.apigraphql.service.MeasurementService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MeasurementServiceImpl implements MeasurementService {
     private final MeasurementAdapter measurementAdapter;
@@ -27,5 +29,10 @@ public class MeasurementServiceImpl implements MeasurementService {
     @Override
     public Threshold deleteThreshold(String id) {
         return this.measurementAdapter.deleteThreshold(id);
+    }
+
+    @Override
+    public List<Threshold> getThresholds(String accountId) {
+        return this.measurementAdapter.getThresholds(accountId);
     }
 }

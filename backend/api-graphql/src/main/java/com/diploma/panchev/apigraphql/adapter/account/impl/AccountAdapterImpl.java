@@ -2,11 +2,15 @@ package com.diploma.panchev.apigraphql.adapter.account.impl;
 
 import com.diploma.panchev.account.grpc.AccountGrpc;
 import com.diploma.panchev.account.grpc.AccountServiceGrpc;
+import com.diploma.panchev.account.grpc.Common;
 import com.diploma.panchev.apigraphql.adapter.account.AccountAdapter;
 import com.diploma.panchev.apigraphql.adapter.account.mapper.AccountMapper;
 import com.diploma.panchev.apigraphql.domain.Account;
 import com.diploma.panchev.apigraphql.domain.Device;
 import com.diploma.panchev.apigraphql.domain.DeviceGroup;
+import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
+import com.diploma.panchev.apigraphql.domain.graphql.query.PageInfo;
+import com.google.protobuf.BoolValue;
 import com.google.protobuf.StringValue;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
@@ -149,5 +153,56 @@ public class AccountAdapterImpl implements AccountAdapter {
                                 .build()
                 ).getDevice()
         );
+    }
+
+    @Override
+    public List<DeviceGroup> getDeviceGroups(String accountId) {
+        return Optional.ofNullable(
+                        this.grpcApi.getDeviceGroups(
+                                AccountGrpc.GetDeviceGroupsRequest.newBuilder()
+                                        .setAccountId(accountId)
+                                        .build()
+                        )
+                )
+                .stream()
+                .flatMap(response -> response.getDeviceGroupsList().stream())
+                .map(MAPPER::map)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Connection<Device> getAccountDevices(String accountId, Boolean ungrouped, String fromDeviceId, int pageSize) {
+        Common.Pagination.Builder paginationBuilder = Common.Pagination.newBuilder().setSize(pageSize);
+        if (fromDeviceId != null) {
+            paginationBuilder.setFromId(StringValue.of(fromDeviceId));
+        }
+
+        return Optional.ofNullable(
+                        this.grpcApi.getAccountDevices(
+                                AccountGrpc.GetAccountDevicesRequest.newBuilder()
+                                        .setAccountId(accountId)
+                                        .setUngrouped(ungrouped != null ? BoolValue.of(ungrouped) : BoolValue.newBuilder().build())
+                                        .build()
+                        )
+                )
+                .map(response -> {
+                    Connection<Device> history = new Connection<>();
+                    PageInfo pageInfo = new PageInfo();
+                    history.setEdges(
+                            response.getDevicesList()
+                                    .stream()
+                                    .map(MAPPER::map)
+                                    .toList()
+                    );
+                    if (history.getEdges() != null && !history.getEdges().isEmpty()) {
+                        pageInfo.setStartCursor(history.getEdges().get(0).getCursor());
+                        pageInfo.setEndCursor(history.getEdges().get(history.getEdges().size() - 1).getCursor());
+                        pageInfo.setHasNextPage(true);
+                    }
+                    history.setPageInfo(pageInfo);
+                    return history;
+
+                })
+                .orElseGet(Connection::new);
     }
 }

@@ -25,4 +25,9 @@ public class NrfCloudServiceImpl implements NrfCloudService {
                 )
                 .orElse(null);
     }
+
+    @Override
+    public NrfAccountSettings getAccountSettings(String accountId) {
+        return this.nrfCloudAdapter.getAccountSettings(accountId).orElse(null);
+    }
 }

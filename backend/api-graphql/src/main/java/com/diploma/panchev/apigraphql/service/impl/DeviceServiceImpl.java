@@ -6,11 +6,13 @@ import com.diploma.panchev.apigraphql.adapter.nrfcloud.NrfCloudAdapter;
 import com.diploma.panchev.apigraphql.domain.Device;
 import com.diploma.panchev.apigraphql.domain.DeviceGroup;
 import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
+import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
 import com.diploma.panchev.apigraphql.service.DeviceService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -70,5 +72,22 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public Device updateDevice(String accountId, String deviceId, String name) {
         return this.accountAdapter.updateDevice(accountId, deviceId, name);
+    }
+
+    @Override
+    public List<DeviceGroup> getDeviceGroups(String accountId) {
+        return this.accountAdapter.getDeviceGroups(accountId);
+    }
+
+    @Override
+    public Connection<Device> getAccountDevices(String accountId, Boolean ungrouped, String fromDeviceId, int pageSize) {
+        Connection<Device> connection =
+                this.accountAdapter.getAccountDevices(accountId, ungrouped, fromDeviceId, pageSize);
+        Connection<Device> deviceConnection = new Connection<>();
+        deviceConnection.setPageInfo(connection.getPageInfo());
+        deviceConnection.setEdges(
+                connection.getEdges()
+        );
+        return deviceConnection;
     }
 }

@@ -12,6 +12,7 @@ service NrfCloudService {
   rpc SetAccountSettings(SetAccountSettingsRequest) returns (SetAccountSettingsResponse);
   rpc RegenerateMqttSettings(RegenerateMqttSettingsRequest) returns (RegenerateMqttSettingsResponse);
   rpc SetSensorConfiguration(SetSensorConfigurationRequest) returns (SetSensorConfigurationResponse);
+  rpc GetAccountSetting(GetAccountSettingRequest) returns (GetAccountSettingResponse);
 }
 
 message SetAccountSettingsRequest {
@@ -41,6 +42,14 @@ message SetSensorConfigurationResponse {
   string account_id = 1;
   string group_id = 2;
   string device_id = 3;
+}
+
+message GetAccountSettingRequest {
+  string account_id = 1;
+}
+
+message GetAccountSettingResponse {
+  AccountSettings account_settings = 1;
 }
 
 message AccountSettings {

@@ -4,4 +4,6 @@ import com.diploma.panchev.apigraphql.domain.NrfAccountSettings;
 
 public interface NrfCloudService {
     NrfAccountSettings setNrfCloudAccount(String accountId, String bearerToken);
+
+    NrfAccountSettings getAccountSettings(String accountId);
 }
