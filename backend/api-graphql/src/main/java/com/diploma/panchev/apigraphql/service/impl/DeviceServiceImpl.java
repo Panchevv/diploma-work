@@ -3,15 +3,13 @@ package com.diploma.panchev.apigraphql.service.impl;
 import com.diploma.panchev.apigraphql.adapter.account.AccountAdapter;
 import com.diploma.panchev.apigraphql.adapter.notification.NotificationAdapter;
 import com.diploma.panchev.apigraphql.adapter.nrfcloud.NrfCloudAdapter;
-import com.diploma.panchev.apigraphql.domain.Device;
-import com.diploma.panchev.apigraphql.domain.DeviceGroup;
-import com.diploma.panchev.apigraphql.domain.Notification;
-import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
+import com.diploma.panchev.apigraphql.domain.*;
 import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
 import com.diploma.panchev.apigraphql.service.DeviceService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
@@ -96,8 +94,8 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public List<Device> getAccountDevices(String accountId, String deviceGroupId) {
         return this.accountAdapter.getAccountGroupDevices(accountId, deviceGroupId).stream()
-                        .filter(Objects::nonNull)
-                        .toList();
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override
@@ -111,5 +109,33 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public List<Notification> getNotificationHistory(String groupId, Integer pageSize, String last, String deviceId) {
         return this.notificationAdapter.getNotificationHistory(groupId, pageSize, last, deviceId);
+    }
+
+    @Override
+    @SneakyThrows
+    public Flux<List<Measurement>> getGroupMeasurementUpdates(String token) {
+        log.trace("getGroupMeasurementUpdates: json={}", token);
+        return this.notificationAdapter.getMeasurementUpdates(token);
+    }
+
+    @Override
+    @SneakyThrows
+    public Flux<List<Notification>> getGroupNotificationUpdates(String token) {
+        log.trace("getGroupNotificationUpdates: json={}", token);
+        return this.notificationAdapter.getNotificationUpdates(token);
+    }
+
+    @Override
+    public DeviceGroup deleteDeviceGroup(String accountId, String groupId) {
+        DeviceGroup deviceGroup = this.accountAdapter.deleteDeviceGroup(accountId, groupId);
+        this.nrfCloudAdapter.deleteSensorConfiguration(deviceGroup.getId(), null);
+        return deviceGroup;
+    }
+
+    @Override
+    public Device deleteDevice(String accountId, String deviceId) {
+        Device device = this.accountAdapter.deleteDevice(accountId, deviceId);
+        this.nrfCloudAdapter.deleteSensorConfiguration(null, deviceId);
+        return device;
     }
 }

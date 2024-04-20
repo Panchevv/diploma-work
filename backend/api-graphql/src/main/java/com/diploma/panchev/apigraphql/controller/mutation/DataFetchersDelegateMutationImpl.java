@@ -146,4 +146,24 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
                 ).map(MAPPER::map)
                 .orElseThrow(() -> new RuntimeException("Wrong accountId and deviceId passed"));
     }
+
+    @Override
+    public DeviceGroup deleteDeviceGroup(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String groupId) {
+        return this.deviceService.getDeviceGroup(accountId, groupId)
+                .map(deviceGroup ->
+                        this.deviceService.deleteDeviceGroup(deviceGroup.getAccountId(), deviceGroup.getId())
+                )
+                .map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId and groupId passed"));
+    }
+
+    @Override
+    public Device deleteDevice(DataFetchingEnvironment dataFetchingEnvironment, String accountId, String deviceId) {
+        return this.deviceService.getAccountDevice(accountId, deviceId)
+                .map(device ->
+                        this.deviceService.deleteDevice(accountId, device.getId())
+                )
+                .map(MAPPER::map)
+                .orElseThrow(() -> new RuntimeException("Wrong accountId and deviceId passed"));
+    }
 }

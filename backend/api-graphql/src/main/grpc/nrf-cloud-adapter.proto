@@ -13,6 +13,7 @@ service NrfCloudService {
   rpc RegenerateMqttSettings(RegenerateMqttSettingsRequest) returns (RegenerateMqttSettingsResponse);
   rpc SetSensorConfiguration(SetSensorConfigurationRequest) returns (SetSensorConfigurationResponse);
   rpc GetAccountSetting(GetAccountSettingRequest) returns (GetAccountSettingResponse);
+  rpc DeleteSensorConfiguration(DeleteSensorConfigurationRequest) returns (DeleteSensorConfigurationResponse);
 }
 
 message SetAccountSettingsRequest {
@@ -50,6 +51,15 @@ message GetAccountSettingRequest {
 
 message GetAccountSettingResponse {
   AccountSettings account_settings = 1;
+}
+
+message DeleteSensorConfigurationRequest {
+  google.protobuf.StringValue device_id = 1;
+  google.protobuf.StringValue group_id = 2;
+}
+
+message DeleteSensorConfigurationResponse {
+  bool success = 1;
 }
 
 message AccountSettings {

@@ -6,6 +6,7 @@ import com.diploma.panchev.apigraphql.domain.MqttSettings;
 import com.diploma.panchev.apigraphql.domain.NrfAccountSettings;
 import com.diploma.panchev.nrf.grpc.NrfCloudGrpc;
 import com.diploma.panchev.nrf.grpc.NrfCloudServiceGrpc;
+import com.google.protobuf.StringValue;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
@@ -72,5 +73,19 @@ public class NrfCloudAdapterImpl implements NrfCloudAdapter {
                 .filter(NrfCloudGrpc.GetAccountSettingResponse::hasAccountSettings)
                 .map(NrfCloudGrpc.GetAccountSettingResponse::getAccountSettings)
                 .map(MAPPER::map);
+    }
+
+    @Override
+    public boolean deleteSensorConfiguration(String groupId, String deviceId) {
+        NrfCloudGrpc.DeleteSensorConfigurationRequest.Builder requestBuilder = NrfCloudGrpc.DeleteSensorConfigurationRequest.newBuilder();
+        if(groupId != null) {
+            requestBuilder.setGroupId(StringValue.newBuilder().setValue(groupId).build());
+        }
+        if(deviceId != null) {
+            requestBuilder.setDeviceId(StringValue.newBuilder().setValue(deviceId).build());
+        }
+        return this.grpcApi.deleteSensorConfiguration(
+                requestBuilder.build()
+        ).getSuccess();
     }
 }

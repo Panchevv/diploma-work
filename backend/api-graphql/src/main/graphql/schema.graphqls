@@ -171,6 +171,8 @@ type Mutation {
     assignDeviceDeviceGroup(accountId: String!, deviceId: String!, groupId: String): DeviceGroup!
     createDevice(accountId: String!, deviceId: String!, groupId: String!, request: DeviceRequest): Device!
     updateDevice(accountId: String!, deviceId: String! update: DeviceUpdate): Device!
+    deleteDeviceGroup(accountId: String!, groupId: String!): DeviceGroup!
+    deleteDevice(accountId: String!, deviceId: String!): Device!
 }
 
 type SubscriptionSession {

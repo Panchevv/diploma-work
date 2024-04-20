@@ -13,4 +13,6 @@ public interface NrfCloudAdapter {
     String setSensorConfiguration(String accountId, String groupId, String deviceId);
 
     Optional<NrfAccountSettings> getAccountSettings(String accountId);
+
+    boolean deleteSensorConfiguration(String groupId, String deviceId);
 }

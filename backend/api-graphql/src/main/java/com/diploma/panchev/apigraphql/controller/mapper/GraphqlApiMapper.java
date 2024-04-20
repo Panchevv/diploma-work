@@ -47,4 +47,8 @@ public interface GraphqlApiMapper {
     @Mapping(target = "node.value", source = "value")
     @Mapping(target = "node.when", source = "when")
     com.diploma.panchev.apigraphql.MeasurementEdge mapEdge(Measurement measurement);
+
+    com.diploma.panchev.apigraphql.Measurement mapMeasurement(Measurement measurement);
+
+    com.diploma.panchev.apigraphql.Notification mapNotification(Notification measurement);
 }

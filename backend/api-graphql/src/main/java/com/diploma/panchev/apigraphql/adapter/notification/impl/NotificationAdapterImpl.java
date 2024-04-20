@@ -2,6 +2,7 @@ package com.diploma.panchev.apigraphql.adapter.notification.impl;
 
 import com.diploma.panchev.apigraphql.adapter.notification.NotificationAdapter;
 import com.diploma.panchev.apigraphql.adapter.notification.mapper.NotificationMapper;
+import com.diploma.panchev.apigraphql.domain.Measurement;
 import com.diploma.panchev.apigraphql.domain.Notification;
 import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
 import com.diploma.panchev.notification.grpc.NotificationGrpc;
@@ -13,10 +14,14 @@ import com.google.protobuf.StringValue;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -62,5 +67,41 @@ public class NotificationAdapterImpl implements NotificationAdapter {
                 .stream()
                 .map(MAPPER::map)
                 .toList();
+    }
+
+    @Override
+    public Flux<List<Measurement>> getMeasurementUpdates(String streamId) {
+        return this.grpc.getMeasurementStreamUpdate(
+                        NotificationGrpc.GetMeasurementStreamUpdateRequest.newBuilder()
+                                .setStreamId(streamId)
+                                .build()
+                )
+                .doOnError(th -> log.error("getMeasurementUpdates: {}", th.getMessage(), th))
+                .doOnComplete(() -> log.trace("getMeasurementUpdates: flux completes"))
+                .doOnCancel(() -> log.trace("getMeasurementUpdates: flux cancelled"))
+                .map(MAPPER::map)
+                .buffer(Duration.ofSeconds(10))
+                .filter(list -> !list.isEmpty())
+                .map(list -> {
+                    Map<String, Measurement> measurementMap = new HashMap<>();
+                    for (Measurement current: list) {
+                        measurementMap.put(current.getDeviceId() + "#" + current.getType(), current);
+                    }
+                    return new LinkedList<>(measurementMap.values());
+                });
+    }
+
+    @Override
+    public Flux<List<Notification>> getNotificationUpdates(String streamId) {
+        return this.grpc.getNotificationsStreamUpdate(
+                        NotificationGrpc.GetNotificationsStreamUpdateRequest.newBuilder()
+                                .setStreamId(streamId)
+                                .build()
+                )
+                .doOnError(th -> log.error("getMeasurementUpdates: {}", th.getMessage(), th))
+                .doOnComplete(() -> log.trace("getMeasurementUpdates: flux completes"))
+                .doOnCancel(() -> log.trace("getMeasurementUpdates: flux cancelled"))
+                .map(MAPPER::map)
+                .buffer(Duration.ofSeconds(10));
     }
 }

@@ -1,10 +1,8 @@
 package com.diploma.panchev.apigraphql.service;
 
-import com.diploma.panchev.apigraphql.domain.Device;
-import com.diploma.panchev.apigraphql.domain.DeviceGroup;
-import com.diploma.panchev.apigraphql.domain.Notification;
-import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
+import com.diploma.panchev.apigraphql.domain.*;
 import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,4 +33,12 @@ public interface DeviceService {
     Optional<Device> getAccountGroupDevice(String accountId, String deviceGroupId, String deviceId);
 
     List<Notification> getNotificationHistory(String groupId, Integer pageSize, String last, String deviceId);
+
+    Flux<List<Measurement>> getGroupMeasurementUpdates(String token);
+
+    Flux<List<Notification>> getGroupNotificationUpdates(String token);
+
+    DeviceGroup deleteDeviceGroup(String accountId, String groupId);
+
+    Device deleteDevice(String accountId, String deviceId);
 }

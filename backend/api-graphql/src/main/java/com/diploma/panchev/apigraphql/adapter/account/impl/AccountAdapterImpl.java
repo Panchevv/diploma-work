@@ -237,4 +237,28 @@ public class AccountAdapterImpl implements AccountAdapter {
                         Optional.empty() : Optional.of(response.getDevices(0)))
                 .map(MAPPER::map);
     }
+
+    @Override
+    public Device deleteDevice(String accountId, String deviceId) {
+        return MAPPER.map(
+                this.grpcApi.deleteAccountDevice(
+                        AccountGrpc.DeleteAccountDeviceRequest.newBuilder()
+                                .setAccountId(accountId)
+                                .setDeviceId(deviceId)
+                                .build()
+                ).getDevice()
+        );
+    }
+
+    @Override
+    public DeviceGroup deleteDeviceGroup(String accountId, String groupId) {
+        return MAPPER.map(
+                this.grpcApi.deleteDeviceGroup(
+                        AccountGrpc.DeleteDeviceGroupRequest.newBuilder()
+                                .setAccountId(accountId)
+                                .setGroupId(groupId)
+                                .build()
+                ).getDeviceGroup()
+        );
+    }
 }

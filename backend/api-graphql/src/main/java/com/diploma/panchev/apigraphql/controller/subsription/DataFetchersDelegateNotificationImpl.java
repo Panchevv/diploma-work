@@ -13,11 +13,11 @@ import java.util.concurrent.CompletableFuture;
 public class DataFetchersDelegateNotificationImpl implements DataFetchersDelegateNotification {
     @Override
     public CompletableFuture<NotificationThreshold> threshold(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<String, NotificationThreshold> dataLoader, Notification origin) {
-        return null;
+        return CompletableFuture.supplyAsync(origin::getThreshold);
     }
 
     @Override
     public NotificationThreshold threshold(DataFetchingEnvironment dataFetchingEnvironment, Notification origin) {
-        return null;
+        return origin.getThreshold();
     }
 }

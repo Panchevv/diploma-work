@@ -1,14 +1,13 @@
 package com.diploma.panchev.apigraphql.adapter.notification.mapper;
 
-import com.diploma.panchev.apigraphql.domain.MeasurementType;
-import com.diploma.panchev.apigraphql.domain.Notification;
-import com.diploma.panchev.apigraphql.domain.SubscriptionSession;
-import com.diploma.panchev.apigraphql.domain.ThresholdOperator;
+import com.diploma.panchev.apigraphql.domain.*;
 import com.diploma.panchev.apigraphql.utils.ProtobufMapper;
 import com.diploma.panchev.notification.grpc.NotificationGrpc;
 import com.diploma.panchev.notification.history.grpc.NotificationHistoryGrpc;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ValueMapping;
 
 import java.util.Arrays;
 
@@ -19,6 +18,21 @@ public interface NotificationMapper {
 
     @Mapping(source = "triggeredAt", target = "when")
     Notification map(NotificationHistoryGrpc.Event event);
+
+    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
+    @Mapping(source = "measurement.type", target = "type")
+    @Mapping(source = "measurement.value", target = "value")
+    @Mapping(source = "createdAt", target = "when")
+    Measurement map(NotificationGrpc.UpdatedMeasurementMessage update);
+
+    @Mapping(source = "triggeredAt", target = "when")
+    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
+    Notification map(NotificationGrpc.UpdatedEventMessage update);
+
+    @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
+    @Mapping(source = "type", target = "measurementType")
+    @Mapping(source = "value", target = "measurementValue")
+    NotificationThreshold map(NotificationGrpc.UpdatedEventMessage.MeasurementThreshold measurementThreshold);
 
     default NotificationHistoryGrpc.MeasurementType map(MeasurementType type) {
         if(type == null) {

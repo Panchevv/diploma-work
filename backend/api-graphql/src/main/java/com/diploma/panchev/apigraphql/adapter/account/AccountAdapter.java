@@ -34,4 +34,8 @@ public interface AccountAdapter {
     List<Device> getAccountGroupDevices(String accountId, String deviceGroupId);
 
     Optional<Device> getAccountGroupDevice(String accountId, String deviceGroupId, String deviceId);
+
+    Device deleteDevice(String accountId, String deviceId);
+
+    DeviceGroup deleteDeviceGroup(String accountId, String groupId);
 }

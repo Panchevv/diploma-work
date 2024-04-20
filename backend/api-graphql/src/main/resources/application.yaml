@@ -1,7 +1,26 @@
 spring:
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri:
   main:
     banner-mode: "off"
   graphql:
     path: /graphql
     websocket:
       path: /graphql
+
+adapter:
+  account:
+    target: localhost:9091
+    secure: false
+  measurement:
+    target: localhost:9092
+    secure: false
+  notification:
+    target: localhost:9093
+    secure: false
+  nrfcloud:
+    target: localhost:9094
+    secure: false
