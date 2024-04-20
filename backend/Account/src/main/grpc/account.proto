@@ -1,0 +1,183 @@
+syntax = "proto3";
+
+package com.diploma.panchev.grpc;
+
+option java_package = "com.diploma.panchev.account.grpc";
+option java_outer_classname = "AccountGrpc";
+
+import "google/protobuf/wrappers.proto";
+import "common.proto";
+
+service AccountService {
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
+  rpc GetAccounts(GetAccountsRequest) returns(GetAccountsResponse);
+  rpc CreateDeviceGroup(CreateDeviceGroupRequest) returns (CreateDeviceGroupResponse);
+  rpc GetDeviceGroups(GetDeviceGroupsRequest) returns (GetDeviceGroupsResponse);
+  rpc UpdateDeviceGroup(UpdateDeviceGroupRequest) returns (UpdateDeviceGroupResponse);
+  rpc GetAccountDevice(GetAccountDeviceRequest) returns(GetAccountDeviceResponse);
+  rpc AssignAccountDevice(AssignAccountDeviceRequest) returns (AssignAccountDeviceResponse);
+  rpc CreateAccountDevice(CreateAccountDeviceRequest) returns (CreateAccountDeviceResponse);
+  rpc UpdateAccountDevice(UpdateAccountDeviceRequest) returns (UpdateAccountDeviceResponse);
+  rpc GetAccountDevices(GetAccountDevicesRequest) returns(GetAccountDevicesResponse);
+  rpc GetDeviceGroupDevices(GetDeviceGroupDevicesRequest) returns (GetDeviceGroupDevicesResponse);
+  rpc DeleteAccountDevice(DeleteAccountDeviceRequest) returns (DeleteAccountDeviceResponse);
+  rpc DeleteDeviceGroup(DeleteDeviceGroupRequest) returns (DeleteDeviceGroupResponse);
+}
+
+message CreateAccountRequest {
+  string name = 1;
+  string user_id = 2;
+}
+
+message CreateAccountResponse {
+  Account account = 1;
+}
+
+message GetAccountsRequest {
+  google.protobuf.StringValue account_id = 1;
+  google.protobuf.StringValue user_id = 10;
+}
+
+message GetAccountsResponse {
+  repeated Account accounts = 1;
+}
+
+message CreateDeviceGroupRequest {
+  string account_id = 1;
+  string name = 2;
+}
+
+message CreateDeviceGroupResponse {
+  DeviceGroup device_group = 1;
+}
+
+message GetDeviceGroupsRequest {
+  string account_id = 1;
+  google.protobuf.StringValue device_group_id = 2;
+}
+
+message GetDeviceGroupsResponse {
+  repeated DeviceGroup device_groups = 1;
+}
+
+message UpdateDeviceGroupRequest {
+  string account_id = 1;
+  string group_id = 2;
+
+  DeviceGroupUpdate update = 9;
+}
+
+message UpdateDeviceGroupResponse {
+  DeviceGroup device_group = 1;
+}
+
+message GetAccountDeviceRequest {
+  string account_id = 1;
+  string device_id = 2;
+}
+
+message GetAccountDeviceResponse {
+  AccountDevice device = 1;
+}
+
+message AssignAccountDeviceRequest {
+  string account_id = 1;
+  string device_id = 2;
+
+  string group_id = 5;
+}
+
+message AssignAccountDeviceResponse {
+  AccountDevice device = 1;
+}
+
+message CreateAccountDeviceRequest {
+  string accountId = 1;
+  string deviceId = 2;
+  string name = 3;
+}
+
+message CreateAccountDeviceResponse {
+  AccountDevice device = 1;
+}
+
+message UpdateAccountDeviceRequest {
+  string account_id = 1;
+  string device_id = 2;
+
+  DeviceUpdate update = 9;
+}
+
+message UpdateAccountDeviceResponse {
+  AccountDevice device = 1;
+}
+
+message GetAccountDevicesRequest {
+  string account_id = 1;
+
+  google.protobuf.BoolValue ungrouped = 9;
+
+  Pagination pagination = 99;
+}
+
+message GetAccountDevicesResponse {
+  repeated AccountDevice devices = 1;
+
+  PageInfo page_info = 99;
+}
+
+message GetDeviceGroupDevicesRequest {
+  string device_group_id = 1;
+  google.protobuf.StringValue account_id = 2;
+  google.protobuf.StringValue device_id = 3;
+}
+
+message GetDeviceGroupDevicesResponse {
+  repeated AccountDevice devices = 1;
+}
+
+message DeleteAccountDeviceRequest {
+  string account_id = 1;
+  string device_id = 2;
+}
+
+message DeleteAccountDeviceResponse {
+  AccountDevice device = 1;
+}
+
+message DeleteDeviceGroupRequest {
+  string account_id = 1;
+  string group_id = 2;
+}
+
+message DeleteDeviceGroupResponse {
+  DeviceGroup device_group = 1;
+}
+
+message Account {
+  string id = 1;
+  string name = 2;
+}
+
+message DeviceGroup {
+  string id = 1;
+  string name = 2;
+
+  Account account = 5;
+}
+
+message DeviceGroupUpdate {
+  string name = 2;
+}
+
+message AccountDevice {
+  string id = 1;
+  string name = 2;
+  Account account = 3;
+  DeviceGroup group = 4;
+  string device_id = 5;
+}
+
+message DeviceUpdate {
+  string name = 2;
+}

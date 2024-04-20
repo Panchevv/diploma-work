@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.diploma.panchev.grpc;
+
+option java_package = "com.diploma.panchev.account.grpc";
+
+import "google/protobuf/wrappers.proto";
+
+message Pagination {
+  google.protobuf.StringValue from_id = 1;
+  int32 size = 10;
+}
+
+message PageInfo {
+  bool has_previous_page = 1;
+  bool has_next_page = 2;
+
+  int64 count = 9;
+  google.protobuf.Int64Value total_elements = 10;
+}
