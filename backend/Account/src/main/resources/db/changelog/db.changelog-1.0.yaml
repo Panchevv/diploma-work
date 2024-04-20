@@ -1,0 +1,325 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: account
+            tableName: account
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: account_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: account_name
+                  type: VARCHAR(255)
+              - column:
+                  name: ceased_on
+                  type: TIMESTAMP
+              - column:
+                  name: modified_on
+                  type: TIMESTAMP
+              - column:
+                  name: created_on
+                  type: TIMESTAMP
+  - changeSet:
+      id: 2
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: account
+            tableName: account_group
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: account_group_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: account_id
+                  type: UUID
+              - column:
+                  name: ceased_on
+                  type: TIMESTAMP
+              - column:
+                  name: modified_on
+                  type: TIMESTAMP
+              - column:
+                  name: created_on
+                  type: TIMESTAMP
+        - addForeignKeyConstraint:
+            constraintName: fk_account_group_to_account
+            baseTableSchemaName: account
+            baseColumnNames: account_id
+            baseTableName: account_group
+            onDelete: SET NULL
+            referencedTableSchemaName: account
+            referencedColumnNames: account_id
+            referencedTableName: account
+  - changeSet:
+      id: 3
+      author: panchev
+      changes:
+        - createTable:
+            tableName: account_device
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_account_device
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: true
+                  name: account_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: device_name
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_at
+                  type: TIMESTAMPTZ
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+  - changeSet:
+      id: 4
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_account_device_to_account
+            baseColumnNames: account_id
+            baseTableName: account_device
+            onDelete: CASCADE
+            referencedColumnNames: account_id
+            referencedTableName: account
+  - changeSet:
+      id: 5
+      author: panchev
+      changes:
+        - addUniqueConstraint:
+            columnNames: device_id
+            constraintName: idx_account_device_device_id
+            tableName: account_device
+  - changeSet:
+      id: 6
+      author: panchev
+      changes:
+        - createTable:
+            tableName: account_group_device
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_account_group_device
+                  name: id
+                  type: uuid
+              - column:
+                  constraints:
+                    nullable: false
+                  name: account_device_id
+                  type: uuid
+              - column:
+                  constraints:
+                    nullable: true
+                  name: account_group_id
+                  type: uuid
+              - column:
+                  name: modified_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+  - changeSet:
+      id: 7
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_account_group_device_to_account_device
+            baseColumnNames: account_device_id
+            baseTableName: account_group_device
+            onDelete: CASCADE
+            referencedTableName: account_device
+            referencedColumnNames: id
+  - changeSet:
+      id: 8
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_account_group_device_to_account_group
+            baseColumnNames: account_group_id
+            baseTableName: account_group_device
+            onDelete: CASCADE
+            referencedTableName: account_group
+            referencedColumnNames: account_group_id
+  - changeSet:
+      id: 9
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: account
+            tableName: account_device_history
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: account_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: device_name
+                  type: VARCHAR(255)
+              - column:
+                  name: active_from
+                  type: TIMESTAMP
+              - column:
+                  name: active_to
+                  type: TIMESTAMP
+              - column:
+                  name: modified_on
+                  type: TIMESTAMP
+              - column:
+                  name: created_on
+                  type: TIMESTAMP
+  - changeSet:
+      id: 10
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_account_device_history_to_account
+            baseTableSchemaName: account
+            baseColumnNames: account_id
+            baseTableName: account_device_history
+            onDelete: RESTRICT
+            referencedTableSchemaName: account
+            referencedColumnNames: account_id
+            referencedTableName: account
+  - changeSet:
+      id: 11
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: account
+            tableName: account_group_device_history
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                  name: account_group_device_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: account_group_id
+                  type: UUID
+              - column:
+                  name: active_from
+                  type: TIMESTAMP
+              - column:
+                  name: active_to
+                  type: TIMESTAMP
+              - column:
+                  name: modified_on
+                  type: TIMESTAMP
+              - column:
+                  name: created_on
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: true
+                  name: account_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: true
+                  name: device_id
+                  type: VARCHAR(64)
+  - changeSet:
+      id: 12
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_account_group_device_history_to_account_group
+            baseTableSchemaName: account
+            baseColumnNames: account_group_id
+            baseTableName: account_group_device_history
+            onDelete: RESTRICT
+            referencedColumnNames: account_group_id
+            referencedTableSchemaName: account
+            referencedTableName: account_group
+  - changeSet:
+      id: 13
+      author: panchev
+      changes:
+        - sql:
+            sql: |-
+              UPDATE account_group_device_history agdh
+              SET
+                account_id = (SELECT account_id FROM account_device_history adh WHERE id = agdh.account_device_id),
+                device_id = (SELECT device_id FROM account_device_history adh WHERE id = agdh.account_device_id)
+  - changeSet:
+      id: 14
+      author: panchev
+      changes:
+        - createTable:
+            tableName: account_user
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: account_id
+                  type: UUID
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: user_id
+                  type: varchar(255)
+              - column:
+                  name: modified_at
+                  type: TIMESTAMPTZ
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMPTZ
+  - changeSet:
+      id: 15
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_account_user_to_account
+            baseColumnNames: account_id
+            baseTableName: account_user
+            onDelete: CASCADE
+            referencedColumnNames: account_id
+            referencedTableName: account
