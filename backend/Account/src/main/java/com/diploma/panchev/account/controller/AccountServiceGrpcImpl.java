@@ -1,14 +1,19 @@
 package com.diploma.panchev.account.controller;
 
 import com.diploma.panchev.account.controller.mapper.GrpcMapper;
+import com.diploma.panchev.account.domain.AccountGroupNeedle;
 import com.diploma.panchev.account.domain.AccountNeedle;
 import com.diploma.panchev.account.grpc.AccountGrpc;
 import com.diploma.panchev.account.grpc.AccountServiceGrpc;
+import com.diploma.panchev.account.service.AccountDeviceService;
+import com.diploma.panchev.account.service.AccountGroupDeviceService;
+import com.diploma.panchev.account.service.AccountGroupService;
 import com.diploma.panchev.account.service.AccountService;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @GRpcService
@@ -16,9 +21,15 @@ public class AccountServiceGrpcImpl extends AccountServiceGrpc.AccountServiceImp
     private final static GrpcMapper MAPPER = Mappers.getMapper(GrpcMapper.class);
 
     private final AccountService accountService;
+    private final AccountGroupService accountGroupService;
+    private final AccountDeviceService accountDeviceService;
+    private final AccountGroupDeviceService accountGroupDeviceService;
 
-    public AccountServiceGrpcImpl(AccountService accountService) {
+    public AccountServiceGrpcImpl(AccountService accountService, AccountGroupService accountGroupService, AccountDeviceService accountDeviceService, AccountGroupDeviceService accountGroupDeviceService) {
         this.accountService = accountService;
+        this.accountGroupService = accountGroupService;
+        this.accountDeviceService = accountDeviceService;
+        this.accountGroupDeviceService = accountGroupDeviceService;
     }
 
     @Override
@@ -61,27 +72,89 @@ public class AccountServiceGrpcImpl extends AccountServiceGrpc.AccountServiceImp
 
     @Override
     public void createDeviceGroup(AccountGrpc.CreateDeviceGroupRequest request, StreamObserver<AccountGrpc.CreateDeviceGroupResponse> responseObserver) {
-        super.createDeviceGroup(request, responseObserver);
+        responseObserver.onNext(
+                AccountGrpc.CreateDeviceGroupResponse.newBuilder()
+                        .setDeviceGroup(
+                                this.accountService.getAccount(UUID.fromString(request.getAccountId()))
+                                        .filter(account -> Objects.isNull(account.getCeasedOn()))
+                                        .map(account -> this.accountGroupService.createAccountGroup(
+                                                        account,
+                                                        request.getName()
+                                                )
+                                        )
+                                        .map(MAPPER::map)
+                                        .orElseGet(() -> AccountGrpc.DeviceGroup.newBuilder().build())
+                        )
+                        .build()
+        );
+        responseObserver.onCompleted();
     }
 
     @Override
     public void getDeviceGroups(AccountGrpc.GetDeviceGroupsRequest request, StreamObserver<AccountGrpc.GetDeviceGroupsResponse> responseObserver) {
-        super.getDeviceGroups(request, responseObserver);
+        responseObserver.onNext(
+                AccountGrpc.GetDeviceGroupsResponse.newBuilder()
+                        .addAllDeviceGroups(
+                                this.accountGroupService.getAccountGroups(
+                                                AccountGroupNeedle.builder()
+                                                        .accountId(UUID.fromString(request.getAccountId()))
+                                                        .deviceGroupId(request.hasDeviceGroupId() ? UUID.fromString(request.getDeviceGroupId().getValue()) : null)
+                                                        .ceased(false)
+                                                        .build()
+                                        )
+                                        .stream()
+                                        .map(MAPPER::map)
+                                        .toList()
+                        )
+                        .build()
+        );
+        responseObserver.onCompleted();
     }
 
     @Override
     public void updateDeviceGroup(AccountGrpc.UpdateDeviceGroupRequest request, StreamObserver<AccountGrpc.UpdateDeviceGroupResponse> responseObserver) {
-        super.updateDeviceGroup(request, responseObserver);
+        responseObserver.onNext(
+                AccountGrpc.UpdateDeviceGroupResponse.newBuilder()
+                        .setDeviceGroup(
+                                MAPPER.map(
+                                        this.accountGroupService.updateAccountGroup(
+                                                UUID.fromString(request.getGroupId()),
+                                                request.getUpdate().getName()
+                                        )
+                                )
+                        )
+                        .build()
+        );
+        responseObserver.onCompleted();
     }
 
     @Override
     public void getAccountDevice(AccountGrpc.GetAccountDeviceRequest request, StreamObserver<AccountGrpc.GetAccountDeviceResponse> responseObserver) {
-        super.getAccountDevice(request, responseObserver);
+        responseObserver.onNext(
+                this.accountDeviceService.getAccountDevice(UUID.fromString(request.getAccountId()), request.getDeviceId())
+                        .map(MAPPER::map)
+                        .map(device -> AccountGrpc.GetAccountDeviceResponse.newBuilder().setDevice(device).build())
+                        .orElseGet(() -> AccountGrpc.GetAccountDeviceResponse.newBuilder().build())
+        );
+        responseObserver.onCompleted();
     }
 
     @Override
     public void assignAccountDevice(AccountGrpc.AssignAccountDeviceRequest request, StreamObserver<AccountGrpc.AssignAccountDeviceResponse> responseObserver) {
-        super.assignAccountDevice(request, responseObserver);
+        responseObserver.onNext(
+                AccountGrpc.AssignAccountDeviceResponse.newBuilder()
+                        .setDevice(
+                                MAPPER.map(
+                                        this.accountGroupDeviceService.addAccountGroupDevice(
+                                                UUID.fromString(request.getAccountId()),
+                                                UUID.fromString(request.getGroupId()),
+                                                request.getDeviceId()
+                                        )
+                                )
+                        )
+                        .build()
+        );
+        responseObserver.onCompleted();
     }
 
     @Override

@@ -6,8 +6,9 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
-public class Account {
-    private UUID accountId;
-    private String name;
+public class AccountGroup {
+    private UUID groupId;
     private OffsetDateTime ceasedOn;
+    private Account account;
+    private String name;
 }

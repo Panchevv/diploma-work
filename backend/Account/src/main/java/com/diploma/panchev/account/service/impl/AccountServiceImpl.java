@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Setter
@@ -83,5 +85,10 @@ public class AccountServiceImpl implements AccountService {
                 size == null ? Pageable.unpaged() : PageRequest.of(page == null ? 0 : page, size)
         );
         return accountPage.map(MAPPER::map);
+    }
+
+    @Override
+    public Optional<Account> getAccount(UUID accountId) {
+        return accountRepository.findById(accountId).map(MAPPER::map);
     }
 }
