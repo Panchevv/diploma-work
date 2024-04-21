@@ -12,4 +12,6 @@ import java.util.UUID;
 public interface AccountDeviceRepository extends JpaRepository<AccountDeviceEntity, UUID>,
         JpaSpecificationExecutor<AccountDeviceEntity> {
     Optional<AccountDeviceEntity> findByAccountIdAndDeviceId(UUID accountId, String deviceId);
+
+    Optional<AccountDeviceEntity> findByDeviceId(String deviceId);
 }

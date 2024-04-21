@@ -1,16 +1,18 @@
 package com.diploma.panchev.account.service.impl;
 
+import com.diploma.panchev.account.domain.Account;
+import com.diploma.panchev.account.domain.AccountGroup;
 import com.diploma.panchev.account.domain.AccountGroupDevice;
-import com.diploma.panchev.account.domain.entity.AccountDeviceEntity;
-import com.diploma.panchev.account.domain.entity.AccountGroupDeviceEntity;
-import com.diploma.panchev.account.domain.entity.AccountGroupDeviceHistoryEntity;
-import com.diploma.panchev.account.domain.entity.AccountGroupEntity;
-import com.diploma.panchev.account.mapper.database.AccountGroupDeviceMapper;
+import com.diploma.panchev.account.domain.AccountGroupDeviceNeedle;
+import com.diploma.panchev.account.domain.entity.*;
+import com.diploma.panchev.account.exception.DataNotFoundException;
+import com.diploma.panchev.account.mapper.AccountGroupDeviceMapper;
 import com.diploma.panchev.account.repository.AccountDeviceRepository;
 import com.diploma.panchev.account.repository.AccountGroupDeviceHistoryRepository;
 import com.diploma.panchev.account.repository.AccountGroupDeviceRepository;
 import com.diploma.panchev.account.repository.AccountGroupRepository;
 import com.diploma.panchev.account.service.AccountGroupDeviceService;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +20,8 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -87,5 +89,64 @@ public class AccountGroupDeviceServiceImpl implements AccountGroupDeviceService 
         this.accountGroupDeviceHistoryRepository.save(historyEntity);
 
         return MAPPER.map(this.accountGroupDeviceRepository.save(mapping));
+    }
+
+    @Override
+    public List<AccountGroupDevice> getAccountGroupDevices(AccountGroupDeviceNeedle needle) {
+        return this.accountGroupDeviceRepository.findAll(
+                        (root, query, criteriaBuilder) -> {
+                            List<Predicate> predicates = new ArrayList<>();
+                            if (needle.getAccountId() != null) {
+                                predicates.add(
+                                        criteriaBuilder.equal(
+                                                root.get(AccountGroupDeviceEntity_.group).get(AccountGroupEntity_.account).get(AccountEntity_.id),
+                                                needle.getAccountId()
+                                        )
+                                );
+                            }
+                            if (needle.getDeviceGroupId() != null) {
+                                predicates.add(
+                                        criteriaBuilder.equal(
+                                                root.get(AccountGroupDeviceEntity_.group).get(AccountGroupEntity_.id), needle.getDeviceGroupId()
+                                        )
+                                );
+                            }
+                            if (needle.getDeviceId() != null) {
+                                predicates.add(
+                                        criteriaBuilder.equal(
+                                                root.get(AccountGroupDeviceEntity_.accountDevice).get(AccountDeviceEntity_.deviceId), needle.getDeviceId()
+                                        )
+                                );
+                            }
+                            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+                        }
+                )
+                .stream()
+                .map(MAPPER::map)
+                .toList();
+    }
+
+    @Override
+    public AccountGroupDevice removeAccountGroupDevice(@NonNull Account account, @NonNull AccountGroup accountGroup, @NonNull AccountGroupDevice device) {
+        AccountGroupDeviceEntity mapping =
+                this.accountGroupDeviceRepository.findByAccountDeviceAccountIdAndGroupIdAndAccountDeviceDeviceId(account.getAccountId(), accountGroup.getGroupId(), device.getDeviceId())
+                        .orElseThrow(() -> new DataNotFoundException("Device is not found"));
+
+        AccountGroupDeviceHistoryEntity entity = this.accountGroupDeviceHistoryRepository.findActiveByDeviceId(device.getDeviceId())
+                .orElseThrow(() -> new DataNotFoundException("Device history is not found"));
+
+        entity.setActiveTo(OffsetDateTime.now());
+        entity.setModifiedOn(OffsetDateTime.now());
+        this.accountGroupDeviceHistoryRepository.save(entity);
+        this.accountGroupDeviceRepository.delete(mapping);
+        return MAPPER.map(mapping);
+    }
+
+    @Override
+    public Collection<AccountGroupDevice> getAccountGroupDevices(Account account, AccountGroup accountGroup) {
+        return accountGroupDeviceRepository.findByGroupId(accountGroup.getGroupId())
+                .stream()
+                .map(MAPPER::map)
+                .collect(Collectors.toList());
     }
 }

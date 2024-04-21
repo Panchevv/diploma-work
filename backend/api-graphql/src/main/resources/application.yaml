@@ -13,14 +13,14 @@ spring:
 
 adapter:
   account:
-    target: localhost:9091
+    target: localhost:8081
     secure: false
   measurement:
-    target: localhost:9092
+    target: localhost:8082
     secure: false
   notification:
-    target: localhost:9093
+    target: localhost:8083
     secure: false
   nrfcloud:
-    target: localhost:9094
+    target: localhost:8084
     secure: false

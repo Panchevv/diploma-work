@@ -1,4 +1,4 @@
-package com.diploma.panchev.account.mapper.database;
+package com.diploma.panchev.account.mapper;
 
 import com.diploma.panchev.account.domain.Account;
 import com.diploma.panchev.account.domain.entity.AccountEntity;

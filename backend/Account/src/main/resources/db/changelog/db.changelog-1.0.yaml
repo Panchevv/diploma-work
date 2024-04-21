@@ -278,16 +278,6 @@ databaseChangeLog:
             referencedTableSchemaName: account
             referencedTableName: account_group
   - changeSet:
-      id: 13
-      author: panchev
-      changes:
-        - sql:
-            sql: |-
-              UPDATE account_group_device_history agdh
-              SET
-                account_id = (SELECT account_id FROM account_device_history adh WHERE id = agdh.account_device_id),
-                device_id = (SELECT device_id FROM account_device_history adh WHERE id = agdh.account_device_id)
-  - changeSet:
       id: 14
       author: panchev
       changes:

@@ -3,7 +3,7 @@ package com.diploma.panchev.account.service.impl;
 import com.diploma.panchev.account.domain.Account;
 import com.diploma.panchev.account.domain.AccountNeedle;
 import com.diploma.panchev.account.domain.entity.*;
-import com.diploma.panchev.account.mapper.database.AccountMapper;
+import com.diploma.panchev.account.mapper.AccountMapper;
 import com.diploma.panchev.account.repository.AccountRepository;
 import com.diploma.panchev.account.repository.AccountUserRepository;
 import com.diploma.panchev.account.service.AccountService;

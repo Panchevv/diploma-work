@@ -1,4 +1,4 @@
-server.port: 8081
+server.port: 8071
 spring:
   main:
     banner-mode: "off"
@@ -18,4 +18,4 @@ spring:
     enabled: true
 grpc:
   enable-reflection: true
-  port: 9091
+  port: 8081

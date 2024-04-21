@@ -5,6 +5,7 @@ import com.diploma.panchev.account.domain.AccountGroup;
 import com.diploma.panchev.account.domain.AccountGroupNeedle;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface AccountGroupService {
@@ -13,4 +14,8 @@ public interface AccountGroupService {
     List<AccountGroup> getAccountGroups(AccountGroupNeedle needle);
 
     AccountGroup updateAccountGroup(UUID groupId, String name);
+
+    Optional<AccountGroup> getAccountGroup(Account account, UUID groupId);
+
+    AccountGroup removeAccountGroup(Account account, AccountGroup group);
 }

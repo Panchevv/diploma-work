@@ -8,9 +8,10 @@ import com.diploma.panchev.account.domain.entity.AccountEntity_;
 import com.diploma.panchev.account.domain.entity.AccountGroupEntity;
 import com.diploma.panchev.account.domain.entity.AccountGroupEntity_;
 import com.diploma.panchev.account.exception.DataNotFoundException;
-import com.diploma.panchev.account.mapper.database.AccountGroupMapper;
+import com.diploma.panchev.account.mapper.AccountGroupMapper;
 import com.diploma.panchev.account.repository.AccountGroupRepository;
 import com.diploma.panchev.account.repository.AccountRepository;
+import com.diploma.panchev.account.service.AccountGroupDeviceService;
 import com.diploma.panchev.account.service.AccountGroupService;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,10 +32,13 @@ import java.util.stream.Collectors;
 public class AccountGroupServiceImpl implements AccountGroupService {
     private final static AccountGroupMapper MAPPER = Mappers.getMapper(AccountGroupMapper.class);
 
+    private final AccountGroupDeviceService accountGroupDeviceService;
+
     private final AccountGroupRepository accountGroupRepository;
     private final AccountRepository accountRepository;
 
-    public AccountGroupServiceImpl(AccountGroupRepository accountGroupRepository, AccountRepository accountRepository) {
+    public AccountGroupServiceImpl(AccountGroupDeviceService accountGroupDeviceService, AccountGroupRepository accountGroupRepository, AccountRepository accountRepository) {
+        this.accountGroupDeviceService = accountGroupDeviceService;
         this.accountGroupRepository = accountGroupRepository;
         this.accountRepository = accountRepository;
     }
@@ -85,5 +90,26 @@ public class AccountGroupServiceImpl implements AccountGroupService {
         current.setName(name);
         current.setModifiedOn(OffsetDateTime.now());
         return MAPPER.map(accountGroupRepository.save(current));
+    }
+
+    @Override
+    public Optional<AccountGroup> getAccountGroup(Account account, UUID groupId) {
+        return this.accountGroupRepository.findById(groupId)
+                .filter(group -> group.getAccount().getId().equals(account.getAccountId()))
+                .map(MAPPER::map);
+    }
+
+    @Override
+    public AccountGroup removeAccountGroup(Account account, AccountGroup accountGroup) {
+        return accountGroupRepository.findById(accountGroup.getGroupId())
+                .filter(group -> group.getAccount().getId().equals(account.getAccountId()))
+                .map(accountGroupEntity -> {
+                    accountGroupDeviceService.getAccountGroupDevices(account, accountGroup)
+                            .forEach(device -> accountGroupDeviceService.removeAccountGroupDevice(account, accountGroup, device));
+                    accountGroupEntity.setCeasedOn(OffsetDateTime.now());
+                    accountGroupEntity.setModifiedOn(OffsetDateTime.now());
+                    return MAPPER.map(accountGroupRepository.save(accountGroupEntity));
+                })
+                .orElseThrow(() -> new DataNotFoundException("Account group is not found"));
     }
 }

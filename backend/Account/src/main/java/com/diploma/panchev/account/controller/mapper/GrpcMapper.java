@@ -1,9 +1,6 @@
 package com.diploma.panchev.account.controller.mapper;
 
-import com.diploma.panchev.account.domain.Account;
-import com.diploma.panchev.account.domain.AccountDevice;
-import com.diploma.panchev.account.domain.AccountGroup;
-import com.diploma.panchev.account.domain.AccountGroupDevice;
+import com.diploma.panchev.account.domain.*;
 import com.diploma.panchev.account.grpc.AccountGrpc;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
@@ -11,6 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 
 @Mapper(
+        uses = {ProtobufMapper.class},
         collectionMappingStrategy = CollectionMappingStrategy.SETTER_PREFERRED,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS
 )
@@ -25,4 +23,7 @@ public interface GrpcMapper {
     AccountGrpc.AccountDevice map(AccountDevice device);
 
     AccountGrpc.AccountDevice map(AccountGroupDevice device);
+
+    @Mapping(source = "items", target = "devicesList")
+    AccountGrpc.GetAccountDevicesResponse map(Relay<AccountDevice> device);
 }
