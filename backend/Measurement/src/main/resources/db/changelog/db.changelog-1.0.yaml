@@ -1,0 +1,363 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: measurement
+            tableName: measurement_type
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: measurement_type
+                  type: VARCHAR(32)
+  - changeSet:
+      id: 2
+      author: panchev
+      changes:
+        - insert:
+            schemaName: measurement
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: measurement_type
+                  type: VARCHAR(32)
+                  value: "TEMPERATURE"
+        - insert:
+            schemaName: measurement
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: measurement_type
+                  type: VARCHAR(32)
+                  value: "HUMIDITY"
+        - insert:
+            schemaName: measurement
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: measurement_type
+                  type: VARCHAR(32)
+                  value: "BATTERY_VOLTAGE"
+        - insert:
+            schemaName: measurement
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: measurement_type
+                  type: VARCHAR(32)
+                  value: "AIR_PRESSURE"
+        - insert:
+            schemaName: measurement
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: measurement_type
+                  type: VARCHAR(32)
+                  value: "RSRP"
+      rollback:
+        - sql: "DELETE FROM measurement.measurement_type WHERE measurement_type = 'TEMPERATURE'"
+        - sql: "DELETE FROM measurement.measurement_type WHERE measurement_type = 'HUMIDITY'"
+        - sql: "DELETE FROM measurement.measurement_type WHERE measurement_type = 'BATTERY_VOLTAGE'"
+        - sql: "DELETE FROM measurement.measurement_type WHERE measurement_type = 'AIR_PRESSURE'"
+        - sql: "DELETE FROM measurement.measurement_type WHERE measurement_type = 'RSRP'"
+  - changeSet:
+      id: 3
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: measurement
+            tableName: measurement
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                  name: measurement_id
+                  type: BIGINT
+              - column:
+                  name: message_id
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
+                  name: measurement_type
+                  type: VARCHAR(32)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: measurement_value
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_on
+                  type: timestamptz
+              - column:
+                  name: account_id
+                  type: UUID
+              - column:
+                  name: group_id
+                  type: UUID
+  - changeSet:
+      id: 4
+      author: panchev
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: measurement_type
+                  type: varchar(32)
+            indexName: idx_measurement_type
+            tableName: measurement
+            schemaName: measurement
+        - addForeignKeyConstraint:
+            constraintName: fk_measurement_to_measurement_type
+            baseTableSchemaName: measurement
+            baseColumnNames: measurement_type
+            baseTableName: measurement
+            onDelete: SET NULL
+            referencedTableSchemaName: measurement
+            referencedColumnNames: measurement_type
+            referencedTableName: measurement_type
+  - changeSet:
+      id: 5
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: measurement
+            tableName: threshold_operator
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: threshold_operator
+                  type: VARCHAR(32)
+  - changeSet:
+      id: 6
+      author: panchev
+      changes:
+        - insert:
+            schemaName: measurement
+            tableName: threshold_operator
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: threshold_operator
+                  type: VARCHAR(32)
+                  value: "EQUAL"
+        - insert:
+            schemaName: measurement
+            tableName: threshold_operator
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: threshold_operator
+                  type: VARCHAR(32)
+                  value: "LESS_THAN"
+        - insert:
+            schemaName: measurement
+            tableName: threshold_operator
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: threshold_operator
+                  type: VARCHAR(32)
+                  value: "GREATER_THAN"
+      rollback:
+        - sql: "DELETE FROM measurement.threshold_operator WHERE threshold_operator = 'EQUAL'"
+        - sql: "DELETE FROM measurement.threshold_operator WHERE threshold_operator = 'LESS_THAN'"
+        - sql: "DELETE FROM measurement.threshold_operator WHERE threshold_operator = 'GREATER_THAN'"
+  - changeSet:
+      id: 7
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: measurement
+            tableName: threshold
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: uuid
+              - column:
+                  constraints:
+                    nullable: false
+                  name: threshold_operator
+                  type: VARCHAR(32)
+              - column:
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: measurement_type
+                  type: VARCHAR(32)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: threshold_value
+                  type: DOUBLE
+              - column:
+                  name: group_id
+                  type: varchar(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: timestamptz
+              - column:
+                  name: modified_at
+                  type: timestamptz
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+  - changeSet:
+      id: 8
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_threshold_to_threshold_operator
+            baseTableSchemaName: measurement
+            baseColumnNames: threshold_operator
+            baseTableName: threshold
+            onDelete: SET NULL
+            referencedTableSchemaName: measurement
+            referencedColumnNames: threshold_operator
+            referencedTableName: threshold_operator
+        - addForeignKeyConstraint:
+            constraintName: fk_threshold_to_measurement_type
+            baseTableSchemaName: measurement
+            baseColumnNames: measurement_type
+            baseTableName: threshold
+            onDelete: SET NULL
+            referencedTableSchemaName: measurement
+            referencedColumnNames: measurement_type
+            referencedTableName: measurement_type
+        - createIndex:
+            columns:
+              - column:
+                  name: device_id
+                  type: VARCHAR(64)
+            indexName: idx_threshold_device_id
+            tableName: threshold
+            schemaName: measurement
+  - changeSet:
+      id: 9
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: measurement
+            tableName: threshold_history
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: uuid
+              - column:
+                  name: threshold_id
+                  type: uuid
+              - column:
+                  name: threshold_operator
+                  type: VARCHAR(32)
+              - column:
+                  name: group_id
+                  type: varchar(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
+                  name: measurement_type
+                  type: VARCHAR(32)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: threshold_value
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: actual_value
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: timestamptz
+  - changeSet:
+      id: 10
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_threshold_history_to_threshold_operator
+            baseTableSchemaName: measurement
+            baseColumnNames: threshold_operator
+            baseTableName: threshold_history
+            onDelete: SET NULL
+            referencedTableSchemaName: measurement
+            referencedColumnNames: threshold_operator
+            referencedTableName: threshold_operator
+        - addForeignKeyConstraint:
+            constraintName: fk_threshold_history_to_measurement_type
+            baseTableSchemaName: measurement
+            baseColumnNames: measurement_type
+            baseTableName: threshold_history
+            onDelete: SET NULL
+            referencedTableSchemaName: measurement
+            referencedColumnNames: measurement_type
+            referencedTableName: measurement_type
+        - addForeignKeyConstraint:
+            constraintName: fk_threshold_history_to_threshold
+            baseTableName: threshold_history
+            baseColumnNames: threshold_id
+            onDelete: CASCADE
+            referencedTableName: threshold
+            referencedColumnNames: id
+        - createIndex:
+            columns:
+              - column:
+                  name: device_id
+                  type: VARCHAR(64)
+            indexName: idx_threshold_history_device_id
+            tableName: threshold
+            schemaName: measurement
+  - changeSet:
+      id: 11
+      author: panchev
+      changes:
+        - createTable:
+            schemaName: measurement
+            tableName: threshold_group
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: id
+                  type: uuid
+              - column:
+                  name: threshold_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: group_id
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: threshold_group
+            baseColumnNames: threshold_id
+            referencedTableName: threshold
+            referencedColumnNames: id
+            constraintName: fk__threshold_group__threshold_id

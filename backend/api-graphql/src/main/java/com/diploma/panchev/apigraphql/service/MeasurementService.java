@@ -7,7 +7,6 @@ import com.diploma.panchev.apigraphql.domain.ThresholdNeedle;
 import com.diploma.panchev.apigraphql.domain.graphql.query.Connection;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

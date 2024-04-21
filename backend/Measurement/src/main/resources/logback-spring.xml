@@ -1,5 +1,7 @@
 <configuration>
+
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -14,6 +16,14 @@
 
     <logger name="org.springframework.ws" level="WARN"/>
     <logger name="org.springframework.security" level="WARN"/>
+
+    <logger name="org.springframework.ws.server.MessageTracing" level="INFO"/>
+    <logger name="org.springframework.ws.client.MessageTracing" level="INFO"/>
+
+    <logger name="org.springframework.web.client.MessageTracing" level="INFO"/>
+
+    <logger name="spring.web.client.MessageTracing.sent" level="INFO"/>
+    <logger name="spring.web.client.MessageTracing.received" level="INFO"/>
 
     <logger name="org.zalando.logbook.Logbook" level="TRACE"/>
 

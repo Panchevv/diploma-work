@@ -19,6 +19,10 @@ public interface NotificationMapper {
     @Mapping(source = "triggeredAt", target = "when")
     Notification map(NotificationHistoryGrpc.Event event);
 
+    @Mapping(source = "value", target = "measurementValue")
+    @Mapping(source = "type", target = "measurementType")
+    NotificationThreshold map(NotificationHistoryGrpc.MeasurementThreshold threshold);
+
     @ValueMapping(source = MappingConstants.ANY_REMAINING, target = MappingConstants.NULL)
     @Mapping(source = "measurement.type", target = "type")
     @Mapping(source = "measurement.value", target = "value")

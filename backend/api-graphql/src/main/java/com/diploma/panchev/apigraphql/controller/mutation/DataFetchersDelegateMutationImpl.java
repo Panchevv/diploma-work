@@ -11,8 +11,6 @@ import graphql.schema.DataFetchingEnvironment;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
 public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMutation {
     private static final GraphqlApiMapper MAPPER = Mappers.getMapper(GraphqlApiMapper.class);

@@ -1,6 +1,5 @@
 package com.diploma.panchev.apigraphql.adapter.measurement.impl;
 
-import com.diploma.panchev.account.grpc.AccountGrpc;
 import com.diploma.panchev.account.grpc.Common;
 import com.diploma.panchev.apigraphql.adapter.measurement.MeasurementAdapter;
 import com.diploma.panchev.apigraphql.adapter.measurement.mapper.MeasurementMapper;

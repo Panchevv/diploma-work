@@ -45,9 +45,6 @@ message UpdatedMeasurementMessage {
       HUMIDITY = 1;
       AIR_PRESSURE = 2;
       BATTERY_VOLTAGE = 3;
-      SPEED = 4;
-      INCLINATION = 6;
-      AZIMUTH = 7;
       RSRP = 21;
     }
   }
