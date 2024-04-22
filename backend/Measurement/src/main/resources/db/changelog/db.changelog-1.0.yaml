@@ -194,6 +194,9 @@ databaseChangeLog:
                   name: threshold_operator
                   type: VARCHAR(32)
               - column:
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
                   constraints:
                     nullable: false
                   name: measurement_type
@@ -239,6 +242,14 @@ databaseChangeLog:
             referencedTableSchemaName: measurement
             referencedColumnNames: measurement_type
             referencedTableName: measurement_type
+        - createIndex:
+            columns:
+              - column:
+                  name: device_id
+                  type: VARCHAR(64)
+            indexName: idx_threshold_device_id
+            tableName: threshold
+            schemaName: measurement
   - changeSet:
       id: 9
       author: panchev
