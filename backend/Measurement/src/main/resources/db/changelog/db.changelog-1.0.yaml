@@ -239,14 +239,6 @@ databaseChangeLog:
             referencedTableSchemaName: measurement
             referencedColumnNames: measurement_type
             referencedTableName: measurement_type
-        - createIndex:
-            columns:
-              - column:
-                  name: device_id
-                  type: VARCHAR(64)
-            indexName: idx_threshold_device_id
-            tableName: threshold
-            schemaName: measurement
   - changeSet:
       id: 9
       author: panchev
