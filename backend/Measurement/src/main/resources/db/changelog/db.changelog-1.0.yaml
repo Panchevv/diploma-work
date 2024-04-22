@@ -194,9 +194,6 @@ databaseChangeLog:
                   name: threshold_operator
                   type: VARCHAR(32)
               - column:
-                  name: device_id
-                  type: VARCHAR(64)
-              - column:
                   constraints:
                     nullable: false
                   name: measurement_type
@@ -207,9 +204,6 @@ databaseChangeLog:
                   name: threshold_value
                   type: DOUBLE
               - column:
-                  name: group_id
-                  type: varchar(255)
-              - column:
                   constraints:
                     nullable: false
                   name: created_at
@@ -219,6 +213,9 @@ databaseChangeLog:
                   type: timestamptz
               - column:
                   name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: account_id
                   type: VARCHAR(255)
   - changeSet:
       id: 8
@@ -295,6 +292,9 @@ databaseChangeLog:
                     nullable: false
                   name: created_at
                   type: timestamptz
+              - column:
+                  name: account_id
+                  type: VARCHAR(255)
   - changeSet:
       id: 10
       author: panchev

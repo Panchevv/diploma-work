@@ -8,7 +8,7 @@ import "google/protobuf/wrappers.proto";
 message MeasurementUpdateMessage {
   string deviceId = 1;
   string accountId = 2;
-  google.protobuf.Int64Value groupId = 3;
+  google.protobuf.StringValue groupId = 3;
 
   repeated Measurement measurement = 5;
 
