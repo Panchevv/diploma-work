@@ -1,0 +1,252 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: panchev
+      changes:
+        - createTable:
+            tableName: event
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_event_id
+                  name: id
+                  type: UUID
+              - column:
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
+                  name: group_id
+                  type: VARCHAR(64)
+              - column:
+                  name: seen_at
+                  type: timestamptz
+              - column:
+                  name: created_at
+                  type: timestamptz
+  - changeSet:
+      id: 2
+      author: panchev
+      changes:
+        - createTable:
+            tableName: threshold_operator
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_threshold_operator_id
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(32)
+  - changeSet:
+      id: 3
+      author: panchev
+      changes:
+        - insert:
+            tableName: threshold_operator
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  valueNumeric: "1"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "Equal"
+        - insert:
+            tableName: threshold_operator
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  valueNumeric: "2"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "Less than"
+        - insert:
+            tableName: threshold_operator
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  valueNumeric: "3"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "Greater than"
+
+  - changeSet:
+      id: 4
+      author: panchev
+      changes:
+        - createTable:
+            tableName: measurement_type
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_measurement_type_id
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(32)
+  - changeSet:
+      id: 5
+      author: panchev
+      changes:
+        - insert:
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  valueNumeric: "1"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "TEMPERATURE"
+        - insert:
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  valueNumeric: "2"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "HUMIDITY"
+        - insert:
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  valueNumeric: "3"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "AIR_PRESSURE"
+        - insert:
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  valueNumeric: "4"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "BATTERY_VOLTAGE"
+        - insert:
+            tableName: measurement_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  value: "8"
+              - column:
+                  name: name
+                  type: VARCHAR(16)
+                  value: "RSRP"
+  - changeSet:
+      id: 6
+      author: panchev
+      changes:
+        - createTable:
+            tableName: threshold
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_measurement
+                  name: id
+                  type: uuid
+              - column:
+                  name: event_id
+                  type: uuid
+              - column:
+                  name: measurement_type_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: value
+                  type: DOUBLE PRECISION
+              - column:
+                  constraints:
+                    nullable: true
+                  name: threshold_operator_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: threshold
+                  type: DOUBLE PRECISION
+  - changeSet:
+      id: 7
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_event_measurement_id_to_measurement_id
+            baseColumnNames: event_id
+            baseTableName: threshold
+            onDelete: CASCADE
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: event
+        - addForeignKeyConstraint:
+            constraintName: fk_threshold_to_measurement_type
+            baseColumnNames: measurement_type_id
+            baseTableName: threshold
+            onDelete: CASCADE
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: measurement_type
+        - addForeignKeyConstraint:
+            constraintName: fk_threshold_to_measurement_operator
+            baseColumnNames: threshold_operator_id
+            baseTableName: threshold
+            onDelete: CASCADE
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: threshold_operator
+  - changeSet:
+      id: 8
+      author: panchev
+      changes:
+        - createTable:
+            tableName: push_stream
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_push_stream_id
+                  name: id
+                  type: uuid
+              - column:
+                  name: account_id
+                  type: varchar(64)
+              - column:
+                  name: group_id
+                  type: varchar(64)
+              - column:
+                  name: expires_at
+                  type: timestamptz
+              - column:
+                  name: created_at
+                  type: timestamptz
+  - changeSet:
+      id: 9
+      author: panchev
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: threshold_name
+                  type: VARCHAR(255)
+            tableName: threshold

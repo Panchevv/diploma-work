@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package events;
+
+option java_package = "com.diploma.panchev.messaging.events";
+
+option java_outer_classname = "EventsProto";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+message EventMessage {
+  string id = 1;
+
+  string rule_id = 3;
+  string device_id = 4;
+  string reference_id = 5;
+  google.protobuf.StringValue group_id = 6;
+  string name = 7;
+
+  google.protobuf.Timestamp triggered_at = 9;
+
+  MeasurementThreshold threshold = 91;
+
+  message MeasurementThreshold {
+    MeasurementType type = 1;
+    double value = 2;
+    double threshold = 3;
+    OperationType operator = 4;
+
+    enum MeasurementType {
+      TEMPERATURE = 0;
+      HUMIDITY = 1;
+      AIR_PRESSURE = 2;
+      BATTERY_VOLTAGE = 3;
+      RSRP = 21;
+    }
+    enum OperationType {
+      EQUAL = 0;
+      LESS_THAN = 1;
+      GREATER_THAN = 2;
+    }
+  }
+}

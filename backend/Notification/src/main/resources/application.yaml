@@ -1,0 +1,33 @@
+spring:
+  main:
+    banner-mode: "off"
+  liquibase:
+    enabled: true
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      group-id: ${env}.notification-service
+      max-poll-records: 5000
+  datasource:
+    url: jdbc:postgresql://localhost:5432/diploma
+    username: admin
+    password: admin
+    hikari:
+      pool-name: MainDB-Pool
+      schema: notification
+      maximum-pool-size: 6
+
+grpc:
+  enable-reflection: true
+  port: 8083
+
+env: diploma-local
+
+messaging:
+  update-measurement-internal:
+    enabled: true
+    topic: ${env}.measurement-update-internal.proto
+  event-message:
+    enabled: true
+    topic: ${env}.event-notification.proto

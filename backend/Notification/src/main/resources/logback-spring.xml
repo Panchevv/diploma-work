@@ -1,0 +1,36 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%date{ISO8601} %-5level [%logger{36}] SID=%X{SessionId} CID=%X{RequestId} [%thread] %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.diploma" level="TRACE"/>
+
+    <logger name="org.springframework" level="WARN"/>
+
+    <logger name="org.springframework.ws" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+
+    <logger name="org.springframework.ws.server.MessageTracing" level="INFO"/>
+    <logger name="org.springframework.ws.client.MessageTracing" level="INFO"/>
+
+    <logger name="org.springframework.web.client.MessageTracing" level="INFO"/>
+
+    <logger name="spring.web.client.MessageTracing.sent" level="INFO"/>
+    <logger name="spring.web.client.MessageTracing.received" level="INFO"/>
+
+    <logger name="org.zalando.logbook.Logbook" level="TRACE"/>
+
+
+    <logger name="com.zaxxer.hikari" level="INFO"/>
+    <logger name="org.hibernate.SQL" level="TRACE"/>
+    <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

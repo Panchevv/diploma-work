@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package com.diploma.panchev.grpc;
+
+option java_package = "com.diploma.panchev.notification.grpc";
+option java_outer_classname = "NotificationGrpc";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+service PushStreamService {
+  rpc CreateStream(CreateStreamRequest) returns (CreateStreamResponse);
+  rpc GetMeasurementStreamUpdate(GetMeasurementStreamUpdateRequest) returns (stream UpdatedMeasurementMessage);
+  rpc GetNotificationsStreamUpdate(GetNotificationsStreamUpdateRequest) returns (stream UpdatedEventMessage);
+}
+
+message CreateStreamRequest {
+  string account_id = 1;
+  string group_id = 2;
+}
+
+message CreateStreamResponse {
+  string stream_id = 1;
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+message GetMeasurementStreamUpdateRequest {
+  string stream_id = 1;
+}
+
+message UpdatedMeasurementMessage {
+  string id = 1;
+  string device_id = 2;
+  google.protobuf.StringValue group_id = 3;
+
+  Measurement measurement = 5;
+
+  google.protobuf.Timestamp created_at = 99;
+
+  message Measurement  {
+    MeasurementType type = 1;
+    double value = 2;
+    enum MeasurementType{
+      TEMPERATURE = 0;
+      HUMIDITY = 1;
+      AIR_PRESSURE = 2;
+      BATTERY_VOLTAGE = 3;
+      RSRP = 21;
+    }
+  }
+}
+
+message GetNotificationsStreamUpdateRequest {
+  string stream_id = 1;
+}
+
+message UpdatedEventMessage {
+  string id = 1;
+
+  string device_id = 4;
+  string group_id = 5;
+
+  google.protobuf.Timestamp triggered_at = 9;
+  google.protobuf.Timestamp seen_at = 10;
+
+  MeasurementThreshold threshold = 91;
+
+  message MeasurementThreshold {
+    string id = 1;
+    UpdatedMeasurementMessage.Measurement.MeasurementType type = 4;
+    double value = 5;
+    string threshold_name = 6;
+    OperationType operator = 8;
+    double threshold = 9;
+
+    enum OperationType {
+      EQUAL = 0;
+      LESS_THAN = 1;
+      GREATER_THAN = 2;
+    }
+  }
+}
