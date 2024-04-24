@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package com.diploma.panchev.messaging;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+message MeasurementUpdateMessage {
+  string deviceId = 1;
+  string accountId = 2;
+  google.protobuf.StringValue groupId = 3;
+
+  repeated Measurement measurement = 5;
+
+  google.protobuf.StringValue messageId = 90;
+  google.protobuf.Timestamp createdAt = 99;
+
+  message Measurement  {
+    MeasurementType type = 1;
+    double value = 2;
+  }
+
+  enum MeasurementType{
+    TEMPERATURE = 0;
+    HUMIDITY = 1;
+    AIR_PRESSURE = 2;
+    BATTERY_VOLTAGE = 3;
+    RSRP = 21;
+  }
+}

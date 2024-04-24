@@ -1,0 +1,122 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: panchev
+      changes:
+        - createTable:
+            tableName: api_configuration
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: account_id
+                  type: varchar(64)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  constraints:
+                    nullable: true
+                  name: bearer_token
+                  type: varchar(255)
+              - column:
+                  constraints:
+                    nullable: true
+                  name: device_id
+                  type: varchar(255)
+              - column:
+                  name: modified_at
+                  type: timestamptz
+              - column:
+                  name: created_at
+                  type: timestamptz
+  - changeSet:
+      id: 2
+      author: panchev
+      changes:
+        - createTable:
+            tableName: mqtt_configuration
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: account_id
+                  type: varchar(64)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  constraints:
+                    nullable: true
+                  name: host
+                  type: varchar(255)
+              - column:
+                  constraints:
+                    nullable: true
+                  name: client_id
+                  type: varchar(255)
+              - column:
+                  constraints:
+                    nullable: true
+                  name: prefix
+                  type: varchar(255)
+              - column:
+                  constraints:
+                    nullable: true
+                  name: ca_cert
+                  type: bytea
+              - column:
+                  constraints:
+                    nullable: true
+                  name: client_cert
+                  type: bytea
+              - column:
+                  constraints:
+                    nullable: true
+                  name: private_key
+                  type: bytea
+              - column:
+                  name: modified_at
+                  type: timestamptz
+              - column:
+                  name: created_at
+                  type: timestamptz
+  - changeSet:
+      id: 3
+      author: panchev
+      changes:
+        - createTable:
+            tableName: sensor_configuration
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                  name: device_id
+                  type: VARCHAR(64)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: account_id
+                  type: varchar(64)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: group_id
+                  type: VARCHAR(64)
+  - changeSet:
+      id: 4
+      author: panchev
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_sensor_configuration_to_api_configuration
+            baseTableName: sensor_configuration
+            baseColumnNames: account_id
+            onDelete: CASCADE
+            referencedColumnNames: account_id
+            referencedTableName: api_configuration
