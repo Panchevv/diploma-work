@@ -1,0 +1,203 @@
+scalar Long
+scalar DateTime
+
+schema {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
+type Query {
+    tenant: Tenant
+    accounts: [Account!]
+    account(id: ID!): Account!
+}
+
+type Tenant {
+    id: ID!
+    name: String!
+    logo: String!
+    owner: TenantOwner
+}
+
+type TenantOwner {
+    id: ID!
+}
+
+type Account {
+    id: ID!
+    name: String
+    deviceGroup(id: ID!): DeviceGroup
+    deviceGroups: [DeviceGroup!]
+    devices(search: DeviceSearch, after: ID, first: Int): DeviceConnection
+    device(id: ID!): Device
+    thresholds: [Threshold!]
+    nrfCloudSettings: NrfAccountSettings
+}
+
+type NrfAccountSettings {
+    accountId: String!
+    active: Boolean!
+    bearerToken: String
+    deviceId: String
+    modifiedAt: DateTime
+    createdAt: DateTime
+    clientId: String
+}
+
+type Threshold {
+    id: ID!
+    name: String!
+    groupIds: [String!]!
+    measurementType: MeasurementType
+    operator: ThresholdOperator!
+    value: Float!
+    modifiedAt: DateTime
+    createdAt: DateTime
+}
+
+enum ThresholdOperator {
+    EQUAL
+    LESS_THAN
+    GREATER_THAN
+}
+
+type DeviceGroup {
+    id: ID!
+    name: String
+    devices: [Device!]
+    device(id: ID!): Device
+    notificationHistory(deviceId: ID, last: ID, pageSize: Int): [Notification]
+}
+
+type Notification {
+    id: ID!
+    deviceId: String
+    threshold: NotificationThreshold
+    seenAt: DateTime
+    when: DateTime!
+}
+
+type NotificationThreshold {
+    id: ID!
+    thresholdName: String!
+    measurementType: MeasurementType
+    measurementValue: Float!
+    operator: ThresholdOperator!
+    threshold: Float!
+}
+
+type Device {
+    id: String!
+    name: String
+    measurement(type: MeasurementType): DeviceMeasurement
+}
+
+type DeviceMeasurement {
+    id: ID!
+    deviceId: String!
+    type: MeasurementType!
+    value: Float
+    when: DateTime
+    history(search: MeasurementHistorySearch, after: ID, first: Int): MeasurementConnection
+}
+
+type Measurement {
+    id: ID!
+    deviceId: String!
+    type: MeasurementType!
+    value: Float
+    when: DateTime
+}
+
+enum MeasurementType {
+    BATTERY_VOLTAGE
+    TEMPERATURE
+    HUMIDITY
+    AIR_PRESSURE
+    RSRP
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String!
+    endCursor: String!
+    count: Long
+    totalElements: Long
+}
+
+type MeasurementEdge {
+    cursor: String!
+    node: Measurement!
+}
+
+type MeasurementConnection {
+    pageInfo: PageInfo!
+    edges: [MeasurementEdge!]
+}
+
+type DeviceEdge {
+    cursor: String!
+    node: Device!
+}
+
+type DeviceConnection {
+    pageInfo: PageInfo!
+    edges: [DeviceEdge!]
+}
+
+input MeasurementHistorySearch {
+    from: DateTime
+    to: DateTime
+}
+
+input DeviceSearch {
+    ungrouped: Boolean
+}
+
+type Mutation {
+    createAccount(name: String!): Account!
+    setNrfCloudAccount(accountId: String!, bearerToken: String!): NrfAccountSettings!
+    createThreshold(accountId: String!, request: ThresholdRequest!): Threshold!
+    editThreshold(accountId: String!, id: ID!, request: ThresholdRequest!): Threshold!
+    deleteThreshold(accountId: String!, id: ID!): Threshold!
+    createDeviceGroup(accountId: String!, name: String!): DeviceGroup!
+    updateDeviceGroup(accountId: String!, groupId: String!, update: GroupUpdate): DeviceGroup!
+    createDeviceGroupSubscription(accountId: String!, groupId: String!): SubscriptionSession!
+    assignDeviceDeviceGroup(accountId: String!, deviceId: String!, groupId: String): DeviceGroup!
+    createDevice(accountId: String!, deviceId: String!, groupId: String!, request: DeviceRequest): Device!
+    updateDevice(accountId: String!, deviceId: String! update: DeviceUpdate): Device!
+    deleteDeviceGroup(accountId: String!, groupId: String!): DeviceGroup!
+    deleteDevice(accountId: String!, deviceId: String!): Device!
+}
+
+type SubscriptionSession {
+    token: String!
+    expiresAt: DateTime!
+}
+
+input ThresholdRequest {
+    name: String!
+    groupIds: [String!]
+    measurementType: MeasurementType!
+    operator: ThresholdOperator!
+    value: Float!
+}
+
+input GroupUpdate {
+    name: String!
+}
+
+input DeviceRequest {
+    name: String!
+}
+
+input DeviceUpdate {
+    name: String!
+}
+
+type Subscription {
+    measurements(token: String!): [Measurement!]!
+    notifications(token: String!): [Notification!]!
+}

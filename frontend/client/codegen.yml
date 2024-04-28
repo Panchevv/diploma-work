@@ -1,0 +1,17 @@
+overwrite: true
+schema: "./graphql/schema.graphqls"
+documents: "src/**/*.graphql"
+ignoreNoDocuments: true
+generates:
+  src/generated/:
+    preset: "client"
+    presetConfig:
+      avoidOptionals: true
+      fragmentMasking: false
+      useTypeImports: true
+    config:
+      avoidOptionals: true
+      useTypeImports: true
+      namingConvention: {
+        enumValues: "change-case-all#upperCase",
+      }
