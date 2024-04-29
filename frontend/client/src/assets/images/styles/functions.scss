@@ -1,0 +1,3 @@
+@function calc-svg-scale($size, $svg-size: 24) {
+    @return calc($size / 24);
+}

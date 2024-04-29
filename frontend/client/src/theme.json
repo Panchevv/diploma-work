@@ -1,27 +1,26 @@
 {
-    "defaultTheme": "light",
-    "variations": {
-      "colors": [
-        "primary"
-      ],
-      "lighten": 5,
-      "darken": 5
-    },
-    "themes": {
-      "light": {
-        "dark": false,
-        "colors": {
-          "background": "#FFFFFF",
-          "surface": "#FFFFFF",
-          "primary": "#6679d8",
-          "on-primary": "#FFFFFF",
-          "secondary": "#808080",
-          "error": "colors.red.base",
-          "info": "colors.blue.base",
-          "success": "colors.green.base",
-          "warning": "colors.orange.base"
-        }
+  "defaultTheme": "light",
+  "variations": {
+    "colors": [
+      "primary"
+    ],
+    "lighten": 5,
+    "darken": 5
+  },
+  "themes": {
+    "light": {
+      "dark": false,
+      "colors": {
+        "background": "#FFFFFF",
+        "surface": "#FFFFFF",
+        "primary": "#6679d8",
+        "on-primary": "#FFFFFF",
+        "secondary": "#808080",
+        "error": "colors.red.base",
+        "info": "colors.blue.base",
+        "success": "colors.green.base",
+        "warning": "colors.orange.base"
       }
     }
   }
-  
+}

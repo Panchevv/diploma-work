@@ -1,0 +1,5 @@
+@each $spacer, $value in vuetify.$spacers {
+    .gap-#{$spacer} {
+        gap: #{$value};
+    }
+}

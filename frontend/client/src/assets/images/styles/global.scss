@@ -1,0 +1,228 @@
+@for $heading-size from 1 through 6 {
+    h#{$heading-size} {
+        font-size: map-get($font-sizes, #{$heading-size + 1})
+    }
+}
+
+// TODO: find a way to get the actual theme colors instead of hardcoding them
+$theme-color-names: primary,
+    primary-darken-1, primary-darken-2, primary-darken-3, primary-darken-4, primary-darken-5,
+    primary-lighten-1, primary-lighten-2, primary-lighten-3, primary-lighten-4, primary-lighten-5,
+    on-primary,
+    on-primary-darken-1, on-primary-darken-2, on-primary-darken-3, on-primary-darken-4, on-primary-darken-5,
+    on-primary-lighten-1, on-primary-lighten-2, on-primary-lighten-3, on-primary-lighten-4, on-primary-lighten-5,
+    secondary, on-secondary, surface, on-surface, background, on-background, info, success, warning, error;
+@each $color in $theme-color-names {
+    .icon-color--#{$color} {
+        path {
+            color: rgb(var(--v-theme-#{$color}));
+        }
+        fill: rgb(var(--v-theme-#{$color}));
+    }
+}
+$additional-icon-colors: (
+    "black": #000000,
+    "white": #ffffff,
+);
+@each $color-name, $color in $additional-icon-colors {
+    .icon-color--#{$color-name} {
+        path {
+            color: $color;
+        }
+        fill: $color;
+    }
+}
+
+// @deprecated
+.icon-white {
+    --deprecated: "WARNING: Use ..icon-color--{color} instead";
+    path: #fff;
+    fill: #fff;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    .list-btn {
+        --v-tabs-height: 40px;
+    }
+}
+
+.content-wrapper {
+    height: 100dvh;
+    padding: 0 24px;
+}
+
+.clear-input-btn {
+    transform: scale(calc-svg-scale(18));
+}
+
+.material-opacity {
+    opacity: 0.62;
+}
+.disabled {
+    filter: contrast(30%) brightness(140%);
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    &-track {
+        background: transparent;
+    }
+    &-thumb {
+        border-radius: 100vw;
+        background: lightgray;
+        &:hover {
+            background: gray;
+        }
+    }
+}
+
+.v-checkbox .v-selection-control__input {
+    margin-top: 0;
+}
+
+.enabled-color {
+    background-color: rgb(var(--v-theme-success));
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.accepted-color {
+    background-color: rgb(120, 249, 120);
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.disabled-color {
+    background-color: rgb(var(--v-theme-error));
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.blocked-color {
+    background-color: red;
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.inactive-color {
+    background-color: rgb(var(--v-theme-secondary), 0.75);
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.label-color-demo {
+    background-color: rgb(var(--v-theme-info), 0.75);
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    min-width: 140px;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.label-color-umlaut-one {
+    background-color: rgb(var(--v-theme-primary), 0.75);
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    min-width: 140px;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.label-color-umlaut-two {
+    background-color: rgb(var(--v-theme-error), 0.75);
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    min-width: 140px;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.label-color-umlaut-three {
+    background-color: rgb(var(--v-theme-warning), 0.75);
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    min-width: 140px;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.test-color {
+    background-color: rgb(var(--v-theme-info));
+    color: #fff;
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.live-color {
+    background-color: rgb(var(--v-theme-success));
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.sleep-color {
+    background-color: rgb(var(--v-theme-warning));
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.download-color {
+    background-color: rgb(var(--v-theme-info));
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.upload-color {
+    background-color: rgb(var(--v-theme-warning));
+    color: rgb(var(--v-theme-background));
+    display: inline-block;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 700;
+}
