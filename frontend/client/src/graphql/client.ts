@@ -4,15 +4,15 @@ import { authExchange, type AuthUtilities } from "@urql/exchange-auth"
 import { relayPagination } from "@urql/exchange-graphcache/extras"
 import { createClient as createWsClient } from "graphql-ws"
 import Keycloak from "keycloak-js"
-import { GetDeviceGroupsDocument } from "@/generated/graphql"
-import type { AssignDeviceToGroupMutation, AssignDeviceToGroupMutationVariables, GetDeviceGroupsQuery, } from "@/generated/graphql"
+// import { GetDeviceGroupsDocument } from "@/generated/graphql"
+// import type { AssignDeviceToGroupMutation, AssignDeviceToGroupMutationVariables, GetDeviceGroupsQuery, } from "@/generated/graphql"
 
 const wsClient = createWsClient({
-    url: `${window.location.protocol === "https:" ? "wss://" : "ws://"}${window.location.host}/graphql`,
+    url: `ws://localhost:8080/graphql`,
 })
 export const createUrqlClient = (keycloak?: Keycloak): Client => {
     return createClient({
-        url: `${window.location.protocol}//${window.location.host}/graphql`,
+        url: `http://localhost:8080/graphql`,
         exchanges: [
             cacheExchange({
                 keys: {
@@ -26,38 +26,38 @@ export const createUrqlClient = (keycloak?: Keycloak): Client => {
                         history: relayPagination(),
                     },
                 },
-                updates: {
-                    Mutation: {
-                        assignDeviceDeviceGroup: (result: AssignDeviceToGroupMutation, args: AssignDeviceToGroupMutationVariables, cache, _info) => {
-                            const deviceGroupDestination = result.assignDeviceDeviceGroup
-                            if (deviceGroupDestination) {
-                                cache.updateQuery({
-                                    query: GetDeviceGroupsDocument,
-                                    variables: {
-                                        accountId: args.accountId,
-                                    },
-                                }, (data: GetDeviceGroupsQuery | null) => {
-                                    //update srcGroup
-                                    const deviceGroups = data?.account.deviceGroups
-                                    if (deviceGroups == null) {
-                                        console.warn("assignDeviceDeviceGroup cache returns null deviceGroups")
-                                        return data
-                                    }
-                                    const sourceGroup = deviceGroups.find((deviceGroup) => {
-                                        const device = deviceGroup.devices?.find((device) => device.id === args.deviceId)
-                                        return device !== undefined && deviceGroup.id !== deviceGroupDestination.id
-                                    })
-                                    if (sourceGroup?.devices == null)
-                                        return data
-                                    const movedDeviceIdxInSrcGroup = sourceGroup.devices.findIndex(device => device.id === args.deviceId)
-                                    sourceGroup.devices = [ ...sourceGroup.devices.slice(0, movedDeviceIdxInSrcGroup), ...sourceGroup.devices.slice(movedDeviceIdxInSrcGroup + 1) ]
-                                    return data
-                                })
+                // updates: {
+                //     Mutation: {
+                //         assignDeviceDeviceGroup: (result: AssignDeviceToGroupMutation, args: AssignDeviceToGroupMutationVariables, cache, _info) => {
+                //             const deviceGroupDestination = result.assignDeviceDeviceGroup
+                //             if (deviceGroupDestination) {
+                //                 cache.updateQuery({
+                //                     query: GetDeviceGroupsDocument,
+                //                     variables: {
+                //                         accountId: args.accountId,
+                //                     },
+                //                 }, (data: GetDeviceGroupsQuery | null) => {
+                //                     //update srcGroup
+                //                     const deviceGroups = data?.account.deviceGroups
+                //                     if (deviceGroups == null) {
+                //                         console.warn("assignDeviceDeviceGroup cache returns null deviceGroups")
+                //                         return data
+                //                     }
+                //                     const sourceGroup = deviceGroups.find((deviceGroup) => {
+                //                         const device = deviceGroup.devices?.find((device) => device.id === args.deviceId)
+                //                         return device !== undefined && deviceGroup.id !== deviceGroupDestination.id
+                //                     })
+                //                     if (sourceGroup?.devices == null)
+                //                         return data
+                //                     const movedDeviceIdxInSrcGroup = sourceGroup.devices.findIndex(device => device.id === args.deviceId)
+                //                     sourceGroup.devices = [ ...sourceGroup.devices.slice(0, movedDeviceIdxInSrcGroup), ...sourceGroup.devices.slice(movedDeviceIdxInSrcGroup + 1) ]
+                //                     return data
+                //                 })
                                 
-                            }
-                        },
-                    },
-                },
+                //             }
+                //         },
+                //     },
+                // },
             }),
             authExchange(async (utils: AuthUtilities) => {
                 const token = keycloak?.token

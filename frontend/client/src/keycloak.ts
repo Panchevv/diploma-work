@@ -1,12 +1,12 @@
-import Keycloak, { type KeycloakInitOptions } from "keycloak-js"
+import Keycloak, { type KeycloakConfig, type KeycloakInitOptions } from "keycloak-js"
 import { useUserStore } from "./stores/UserStore"
 
-// const config: KeycloakConfig = {
-//     clientId: "web-client",
-//     realm: "diploma",
-//     url: "http://localhost:8085/",
-// }
-const keycloak: Keycloak = new Keycloak('/keycloak.json')
+const config: KeycloakConfig = {
+    clientId: "web-client",
+    realm: "diploma",
+    url: "http://localhost:8085/",
+}
+const keycloak: Keycloak = new Keycloak(config)
 const keycloakInitOptions: KeycloakInitOptions = {
     onLoad: "check-sso", silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`, checkLoginIframe: false,
     flow: "implicit", redirectUri: `${window.location.origin}/`,

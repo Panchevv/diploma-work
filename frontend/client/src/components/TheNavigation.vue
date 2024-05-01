@@ -17,15 +17,15 @@
                         <span :class="pickCssClass('nav-icon-wrapper', $style)">
                             <SvgIcon :type="navItem.icon.type" :category="navItem.icon.category" :name="navItem.icon.name" alt="" :class="pickCssClass('icon', $style)" />
                         </span>
-                        <span :class="pickCssClass('nav-link__text', $style)">{{ formatTranslation(t, `navigation_panel.${(navItem.name).toLowerCase()}`) }}</span>
-                        <span v-if="modelValue === false" :class="pickCssClass('tooltip-text', $style)">{{ formatTranslation(t, `navigation_panel.${(navItem.name).toLowerCase()}`) }}</span>
+                        <span :class="pickCssClass('nav-link__text', $style)">{{ navItem.name }}</span>
+                        <span v-if="modelValue === false" :class="pickCssClass('tooltip-text', $style)">{{ navItem.name }}</span>
                     </RouterLink>
                     <button v-else v-ripple type="button" :class="pickCssClass('nav-link', $style)" @click="navItem.onClick">
                         <span :class="pickCssClass('nav-icon-wrapper', $style)">
                             <SvgIcon :type="navItem.icon.type" :category="navItem.icon.category" :name="navItem.icon.name" alt="" :class="pickCssClass('icon', $style)" />
                         </span>
-                        <span :class="pickCssClass('nav-link__text', $style)">{{ formatTranslation(t, `navigation_panel.${(navItem.name).toLowerCase()}`) }}</span>
-                        <span v-if="modelValue === false" :class="pickCssClass('tooltip-text', $style)">{{ formatTranslation(t, `navigation_panel.${(navItem.name).toLowerCase()}`) }}</span>
+                        <span :class="pickCssClass('nav-link__text', $style)">{{ navItem.name }}</span>
+                        <span v-if="modelValue === false" :class="pickCssClass('tooltip-text', $style)">{{ navItem.name }}</span>
                     </button>
                 </li>
             </ul>
@@ -84,7 +84,7 @@ const closeSidebar = () => {
 
 const navItems = ref<Array<NavItem>>([
     {
-        name: "nRF Cloud Account",
+        name: "nRF Cloud",
         icon: {
             type: IconType.MATERIAL,
             category: "filled",
@@ -96,72 +96,28 @@ const navItems = ref<Array<NavItem>>([
         },
     },
     {
-        name: "Live",
+        name: "Sensors",
         icon: {
             type: IconType.MATERIAL,
             category: "filled",
-            name: "play_arrow",
-        },
-        onClick: () => { 
-            router.push("/live")
-            closeSidebar(); 
-        },
-    },
-    {
-        name: "Beehives",
-        icon: {
-            type: IconType.MATERIAL,
-            category: "filled",
-            name: "groups",
+            name: "sensors",
         },
         onClick: () => { 
             router.push("/groups")
             closeSidebar(); 
         },
     },
-    // {
-    //     name: "Task Manager",
-    //     icon: {
-    //         type: IconType.MATERIAL,
-    //         category: "filled",
-    //         name: "contacts",
-    //     },
-    //     to: "/taskmanager",
-    // },
     {
-        name: "SmartAgents",
+        name: "Thresholds",
         icon: {
             type: IconType.NORMAL,
             name: "icon_smart_agent",
         },
         onClick: () => { 
-            router.push("/smartagents")
+            router.push("/thresholds")
             closeSidebar(); 
         },
     },
-    {
-        name: "IoTSIMCards",
-        icon: {
-            type: IconType.MATERIAL,
-            category: "filled",
-            name: "sim_card",
-        },
-        onClick: () => { 
-            router.push("/iot/simcards")
-            closeSidebar(); 
-        },
-    },
-    /*
-    {
-        name: "Business Locations",
-        icon: {
-            type: IconType.MATERIAL,
-            category: "filled",
-            name: "flag",
-        },
-        to: "/bpois",
-    },
-    */
     {
         name: "Reports",
         icon: {
@@ -173,15 +129,6 @@ const navItems = ref<Array<NavItem>>([
             router.push("/history")
             closeSidebar(); 
         },
-    },
-    {
-        name: "Invitations",
-        icon: {
-            type: IconType.MATERIAL,
-            category: "outlined",
-            name: "mail",
-        },
-        to: "/invitations",
     },
     {
         name: "Logout",

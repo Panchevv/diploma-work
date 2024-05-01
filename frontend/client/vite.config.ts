@@ -32,12 +32,12 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/graphql': {
-        target: "http://localhost:8080",
+        target: "localhost:8080/graphql",
         changeOrigin: true,
         ws: true
       },
       '/keycloak.json': {
-        target: "http://localhost:8085",
+        target: "localhost:8085/",
         changeOrigin: true,
         ws: true
       }
