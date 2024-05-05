@@ -1,0 +1,10 @@
+query getDeviceGroupsInfo($accountId: ID!) {
+    account(id: $accountId) {
+        id
+        name
+        deviceGroups {
+            id
+            name
+        }
+    }
+}

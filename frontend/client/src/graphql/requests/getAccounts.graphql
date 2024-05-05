@@ -1,0 +1,14 @@
+query getAccounts {
+  accounts {
+      id
+      name
+      deviceGroups {
+          id
+          name
+          devices {
+              id
+              name
+          }
+      }
+  }
+}

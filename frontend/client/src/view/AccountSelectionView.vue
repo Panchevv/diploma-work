@@ -38,7 +38,6 @@ import { GetAccountsDocument, type Account, type Query } from "@/generated/graph
     
 import SvgIcon, { IconType } from "@/components/SvgIcon.vue"
     
-import _ from "lodash"
 import { useGlobalStore } from "@/stores/GlobalStore"
 import { storeToRefs } from "pinia"
     
@@ -122,4 +121,3 @@ const redirectCreateAccount = () => {
     }
 }
 </style>
-
