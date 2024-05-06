@@ -1,0 +1,6 @@
+mutation setNrfCloudAccount($accountId: String!, $bearerToken: String!) {
+  setNrfCloudAccount(accountId: $accountId, bearerToken: $bearerToken) {
+    accountId
+    bearerToken
+  }
+}

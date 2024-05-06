@@ -1,0 +1,9 @@
+query getNRFCloudConfiguration($id: ID!) {
+  account(id: $id) {
+    id
+    name
+    nrfCloudSettings {
+      bearerToken
+    }
+  }
+}

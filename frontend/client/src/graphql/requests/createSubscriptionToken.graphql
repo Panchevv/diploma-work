@@ -1,0 +1,9 @@
+mutation createSubscriptionToken($accountId: String!, $deviceGroupId: String!) {
+  createDeviceGroupSubscription(
+    accountId: $accountId
+    groupId: $deviceGroupId
+  ) {
+    token
+    expiresAt
+  }
+}

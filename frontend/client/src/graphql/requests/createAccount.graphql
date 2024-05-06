@@ -1,0 +1,14 @@
+mutation createAccount($name: String!) {
+  createAccount(name: $name) {
+    id
+    name
+    deviceGroups {
+      id
+      name
+      devices {
+        id
+        name
+      }
+    }
+  }
+}

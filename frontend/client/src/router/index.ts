@@ -1,9 +1,9 @@
 import { createRouter as createVueRouter, createWebHistory } from "vue-router"
-// import AccountSelectionView from "@/views/AccountSelectionView.vue"
-// import AccountCreationView from "@/views/AccountCreationView.vue"
+import AccountSelectionView from "@/views/AccountSelectionView.vue"
+import AccountCreationView from "@/views/AccountCreationView.vue"
 // import BeehivesView from "@/views/BeehivesView.vue"
 // import ReportsView from "@/views/ReportsView.vue"
-// import DashboardView from "@/views/DashboardView.vue"
+import NrfCloudView from "@/views/NrfCloudView.vue"
 // import NotificationsView from "@/views/NotificationsView.vue"
 // import AgentsView from "@/views/AgentsView.vue"
 import { type App } from "vue"
@@ -13,11 +13,11 @@ const createRouter = (app: App) => {
     const router = createVueRouter({
         history: createWebHistory(import.meta.env.BASE_URL),
         routes: [
-            // {
-            //     path: "/",
-            //     name: "nRF Cloud",
-            //     component: NrfCloudView,
-            // },
+            {
+                path: "/",
+                name: "nRF Cloud",
+                component: NrfCloudView,
+            },
             // {
             //     path: "/groups",
             //     name: "sensors",
@@ -33,22 +33,22 @@ const createRouter = (app: App) => {
             //     name: "notifications",
             //     component: NotificationsView,
             // },
-            // {
-            //     path: "/account-create",
-            //     name: "accountCreation",
-            //     component: AccountCreationView,
-            //     meta: {
-            //         hideNavbar: true,
-            //     },
-            // },
-            // {
-            //     path: "/account-select",
-            //     name: "accountSelection",
-            //     component: AccountSelectionView,
-            //     meta: {
-            //         hideNavbar: true,
-            //     },
-            // },
+            {
+                path: "/account-create",
+                name: "accountCreation",
+                component: AccountCreationView,
+                meta: {
+                    hideNavbar: true,
+                },
+            },
+            {
+                path: "/account-select",
+                name: "accountSelection",
+                component: AccountSelectionView,
+                meta: {
+                    hideNavbar: true,
+                },
+            },
             // {
             //     path: "/thresholds",
             //     name: "thresholds",

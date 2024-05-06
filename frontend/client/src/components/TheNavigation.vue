@@ -6,7 +6,7 @@
             <SvgIcon v-else :type="IconType.FONT_AWESOME" category="fas" name="bars" alt="" :class="pickCssClass('icon', $style)" />
         </button>
         <div :class="pickCssClass('company-logo', $style)">
-            <img src="@/assets/images/logo.png" alt="Menu logo" />
+            <img src="@/assets/images/logo.png" alt="Menu logo" style="height: 50px;" />
         </div>
     </header>
     <div :class="pickCssClass('menu-bar', $style)">

@@ -1,0 +1,16 @@
+subscription subscribeNotifications($token: String!) {
+  notifications(token: $token) {
+    id
+    deviceId
+    threshold {
+      id
+      thresholdName
+      measurementType
+      measurementValue
+      operator
+      threshold
+    }
+    seenAt
+    when
+  }
+}
