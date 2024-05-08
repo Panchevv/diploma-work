@@ -1,0 +1,21 @@
+query getUngroupedDevices($accountId: ID!) {
+  account(id: $accountId) {
+    id
+    name
+    devices(search: { ungrouped: true }) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+}

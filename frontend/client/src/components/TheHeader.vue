@@ -1,7 +1,7 @@
 <template>
 <header :class="$style.header">
     <h1 v-if="showHeading" :class="$style.heading">
-        <Logo alt="Company logo" />
+        <Logo alt="Company logo" :width="250" :height="180" />
     </h1>
     
     <div :class="$style.toolbar">
@@ -80,7 +80,7 @@ import SvgIcon, { type SvgIconProps } from "@/components/SvgIcon.vue"
 import TheHeaderMenuActivator from "@/components/TheHeaderMenuActivator.vue"
 import TheHeaderMenuList from "@/components/TheHeaderMenuList.vue"
     
-import Logo from "@/assets/images/logo_2.png"
+import Logo from "@/assets/images/logo_2.svg"
     
 const props = defineProps<{
     showHeading?: boolean,

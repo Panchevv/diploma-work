@@ -1,0 +1,10 @@
+mutation createDeviceGroup($accountId: String!, $name: String!) {
+  createDeviceGroup(accountId: $accountId, name: $name) {
+    id
+    name
+    devices {
+      id
+      name
+    }
+  }
+}

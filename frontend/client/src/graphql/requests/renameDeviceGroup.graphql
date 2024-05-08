@@ -1,0 +1,14 @@
+mutation renameDeviceGroup(
+  $accountId: String!
+  $groupId: String!
+  $name: String!
+) {
+  updateDeviceGroup(
+    accountId: $accountId
+    groupId: $groupId
+    update: { name: $name }
+  ) {
+    id
+    name
+  }
+}

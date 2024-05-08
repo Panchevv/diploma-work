@@ -1,0 +1,16 @@
+mutation addDevice(
+  $accountId: String!
+  $deviceId: String!
+  $groupId: String!
+  $name: String!
+) {
+  createDevice(
+    accountId: $accountId
+    deviceId: $deviceId
+    groupId: $groupId
+    request: { name: $name }
+  ) {
+    id
+    name
+  }
+}

@@ -1,0 +1,18 @@
+mutation assignDeviceToGroup(
+  $accountId: String!
+  $deviceId: String!
+  $deviceGroupId: String!
+) {
+  assignDeviceDeviceGroup(
+    accountId: $accountId
+    deviceId: $deviceId
+    groupId: $deviceGroupId
+  ) {
+    id
+    name
+    devices {
+      id
+      name
+    }
+  }
+}

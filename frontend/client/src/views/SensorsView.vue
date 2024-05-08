@@ -202,9 +202,8 @@ const { accountId } = useUserStore()
 const router = useRouter()
 const newDeviceName = ref<string>("")
 const newDeviceId = ref<string>("")
-const newDeviceProfileId = ref<string>("")
 const addDeviceButtonDisabled = computed(() => {
-    return !newDeviceName.value || !newDeviceId.value || !newDeviceProfileId.value;
+    return !newDeviceName.value || !newDeviceId.value;
 });
 const dialog = ref(false)
 const addSensorDialog = ref(false)
@@ -274,7 +273,7 @@ const renameGroup = () => {
             return
         }
         //@ts-ignore
-        toast(`${formatTranslation(t, `beehive.pop_up_notifications.rename_group`)}"${data?.updateDeviceGroup.name}"`, {
+        toast(`Successfully RENAMED the Group to "${data?.updateDeviceGroup.name}"`, {
             cardProps: {
                 color: "success",
             },
@@ -294,7 +293,7 @@ const createDeviceGroup = () => {
         selectedDeviceGroupId.value = data?.createDeviceGroup.id;        
         if (error == null) {            
             //@ts-ignore
-            toast(`${formatTranslation(t, `beehive.pop_up_notifications.add_group`)}"${data?.createDeviceGroup.name}"`, {
+            toast(`Successfully CREATED Group "${data?.createDeviceGroup.name}"`, {
                 cardProps: {
                     color: "success",
                 },
@@ -317,7 +316,7 @@ const createDevice = async () => {
         if (error == null) {            
             closeForm()
             //@ts-ignore
-            toast(`${formatTranslation(t, `beehive.pop_up_notifications.add_device`)}"${data?.createDevice.name}"`, {
+            toast(`Successfully CREATED Device "${data?.createDevice.name}"`, {
                 cardProps: {
                     color: "success",
                 },
