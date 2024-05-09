@@ -168,6 +168,44 @@
                     </v-card>
                 </v-dialog>
             </div>
+            <div>
+                <v-dialog v-model="confirmDeleteDialog" persistent width="500" height="500">
+                    <v-card style="padding: 1rem; align-items: center;">
+                        <div style="height: 160px; width: 150px; display: flex; justify-content: center; align-items: center;">
+                            <SvgIcon :type="IconType.MATERIAL" class="icon-color--error" style="transform: scale(6); margin-bottom: 20px;" category="round" name="warning_amber" alt="warning" />
+                        </div>
+                        <v-card-title>
+                            <p style="text-align: center; white-space: wrap;" class="text-h5">
+                                Are you sure?
+                            </p>
+                        </v-card-title>
+                        <v-card-text>
+                            <p style="color:gray; white-space: wrap;text-align: center;">
+                                You are about to delete group with name 
+                                <span style="font-weight: bold;">"{{ selectedDeviceGroupName }}</span>"?
+                            </p>
+                        </v-card-text>
+                        <v-card-actions style="width: 60%;display: flex; justify-content: space-evenly; margin-top: 20px">
+                            <v-btn
+                                style="border: 1.5px solid #b0b0b0; background-color: white; color: #9d9d9d; padding: 20px; align-content: center;" 
+                                variant="text"
+                                :disabled="loadingDeleteGroup"
+                                @click="confirmDeleteDialog = false">
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                class="bg-error"
+                                style=" padding: 20px; align-content: center;"
+                                color="white"
+                                variant="text"
+                                :loading="loadingDeleteGroup"
+                                @click="deleteDeviceGroup(selectedGroupId)">
+                                Delete
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </div>
         </div>
     </section>
 </main>
@@ -182,8 +220,8 @@ import { useMutation, useQuery, type OperationResult } from "@urql/vue"
 import { useUserStore } from "@/stores/UserStore"
 
 import SvgIcon, { IconType, type SvgIconProps } from "@/components/SvgIcon.vue"
-import { AddDeviceDocument, CreateDeviceGroupDocument, GetDeviceGroupsDocument, GetUngroupedDevicesDocument, RenameDeviceGroupDocument } from "@/generated/graphql"
-import type { DeviceGroup, Device, DeviceEdge, Query, CreateDeviceGroupMutation, CreateDeviceGroupMutationVariables, AddDeviceMutation, AddDeviceMutationVariables, RenameDeviceGroupMutation, RenameDeviceGroupMutationVariables } from "@/generated/graphql"
+import { AddDeviceDocument, CreateDeviceGroupDocument, GetDeviceGroupsDocument, GetUngroupedDevicesDocument, RenameDeviceGroupDocument, DeleteDeviceGroupDocument } from "@/generated/graphql"
+import type { DeviceGroup, Device, DeviceEdge, Query, CreateDeviceGroupMutation, CreateDeviceGroupMutationVariables, AddDeviceMutation, AddDeviceMutationVariables, RenameDeviceGroupMutation, RenameDeviceGroupMutationVariables, DeleteDeviceGroupMutation, DeleteDeviceGroupMutationVariables } from "@/generated/graphql"
 
 import TheHeader, { ToolbarItemType, type ToolbarItem, DropdownItemType } from "@/components/TheHeader.vue"
 import TheExpansionGroupPanel from "@/components/TheExpansionGroupPanel.vue"
@@ -215,6 +253,8 @@ const fromSensors = ref<string>("")
 const renameGroupDialog = ref<boolean>(false)
 const editedName = ref<string>("")
 const loadingRenameGroup = ref<boolean>(false)
+const loadingDeleteGroup = ref<boolean>(false)
+const confirmDeleteDialog = ref<boolean>(false)
 
 const handleActionButtonClick = (actionButton: any, deviceGroupId: string, deviceGroupName: string) => {
     if (actionButton.id === "addSensor") {
@@ -234,6 +274,11 @@ const handleActionButtonClick = (actionButton: any, deviceGroupId: string, devic
         selectedDeviceGroupName.value = deviceGroupName;
         editedName.value = selectedDeviceGroupName.value
         renameGroupDialog.value = true;
+    }
+    if (actionButton.id === "deleteGroup") {
+        selectedGroupId.value = deviceGroupId;
+        selectedDeviceGroupName.value = deviceGroupName;
+        confirmDeleteDialog.value = true;
     }
 }
 
@@ -326,6 +371,28 @@ const createDevice = async () => {
     })
 }
 
+const deleteDeviceGroupMutation = useMutation<DeleteDeviceGroupMutation, DeleteDeviceGroupMutationVariables>(DeleteDeviceGroupDocument)
+const deleteDeviceGroup = async (selectedGroupId: any) => {
+    loadingDeleteGroup.value = true
+    deleteDeviceGroupMutation.executeMutation({
+        accountId: accountId!,
+        groupId: selectedGroupId,
+    }).then(({ data, error }: OperationResult<DeleteDeviceGroupMutation>) => {
+        console.error(error);
+        loadingDeleteGroup.value = false
+        if (error == null) {   
+            //@ts-ignore
+            toast(`${formatTranslation(t, `beehive.pop_up_notifications.delete_group`)}"${data?.deleteDeviceGroup.name}"`, {
+                cardProps: {
+                    color: "success",
+                },
+            })
+        }
+        confirmDeleteDialog.value = false
+        deviceGroupsResult.executeQuery({ requestPolicy: 'network-only' })
+    })
+}
+
 const fetching = computed(() => deviceGroupsResult.fetching.value || ungroupedDevicesResult.fetching.value)
 const fetchingAddDevice = ref<boolean>(false)
 const deviceGroups = computed(() => deviceGroupsResult.data.value?.account.deviceGroups ?? [])
@@ -371,7 +438,7 @@ const actionButtons: Array<{
             category: "round",
             alt: "delete group icon",
         },
-        enabled: false,
+        enabled: true,
     },
     {
         id: "notifications",

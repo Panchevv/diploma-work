@@ -1,5 +1,5 @@
 <template>
-<div class="d-flex justify-space-between gap-5">
+<div class="d-flex justify-space-between gap-5" style="padding: 0 16px;">
     <span class="d-flex flex-column align-center">
         <v-btn disabled size="small" class="v-btn--icon">
             <SvgIcon :type="IconType.MATERIAL" category="round" name="edit" alt="edit icon" :class="pickCssClass('beehive-btn-icon', $style)" />
@@ -7,10 +7,48 @@
         <span :class="pickCssClass('beehive-btn-text', $style)">Edit Name</span>
     </span>
     <span class="d-flex flex-column align-center">
-        <v-btn disabled size="small" class="v-btn--icon">
-            <SvgIcon :type="IconType.MATERIAL" category="round" name="delete" alt="delete icon" :class="pickCssClass('beehive-btn-icon', $style)" />
-        </v-btn>
-        <span :class="pickCssClass('beehive-btn-text', $style)">Delete Group</span>
+        <v-dialog v-model="showDeleteDeviceDialog" :class="extractCssClass('group-select-dialog', $style)">
+            <template #activator="{ props: activatorProps }">
+                <v-btn v-bind="activatorProps" :disabled="selectedDevice == null" size="small" class="v-btn--icon">
+                    <SvgIcon :type="IconType.MATERIAL" category="round" name="delete" alt="delete icon" :class="pickCssClass('beehive-btn-icon', $style)" />
+                </v-btn>
+                <span :class="pickCssClass('beehive-btn-text', $style)">Delete Device</span>
+            </template>
+            <v-card style="padding: 1rem; align-items: center;">
+                <div style="height: 160px; width: 150px; display: flex; justify-content: center; align-items: center;">
+                    <SvgIcon :type="IconType.MATERIAL" class="icon-color--error" style="transform: scale(6); margin-bottom: 20px;" category="round" name="warning_amber" alt="warning" />
+                </div>
+                <v-card-title>
+                    <p style="text-align: center; white-space: wrap;" class="text-h5">
+                        Are you sure?
+                    </p>
+                </v-card-title>
+                <v-card-text>
+                    <p style="color:gray; white-space: wrap;text-align: center;">
+                        You are about to delete device with name 
+                        <span style="font-weight: bold;">"{{ selectedDevice?.name }}</span>"?
+                    </p>
+                </v-card-text>
+                <v-card-actions style="width: 60%;display: flex; justify-content: space-evenly; margin-top: 20px">
+                    <v-btn
+                        style="border: 1.5px solid #b0b0b0; background-color: white; color: #9d9d9d; padding: 20px; align-content: center;" 
+                        variant="text"
+                        :disabled="loadingDeleteGroup"
+                        @click="showDeleteDeviceDialog = false">
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                        class="bg-error"
+                        style=" padding: 20px; align-content: center;"
+                        color="white"
+                        variant="text"
+                        :loading="loadingDeleteGroup"
+                        @click="deleteDevice()">
+                        Delete
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </span>
     <span class="d-flex flex-column align-center">
         <v-dialog v-model="showAssignDialog" :class="extractCssClass('group-select-dialog', $style)">
@@ -47,12 +85,16 @@ import { useMutation, useQuery, type OperationResult, type AnyVariables } from "
 
 import { useUserStore } from "@/stores/UserStore"
 
-import { AssignDeviceToGroupDocument, GetDeviceGroupsInfoDocument, type Query } from "@/generated/graphql"
-import type { AssignDeviceToGroupMutation, DeviceGroup, Device } from "@/generated/graphql"
+import { AssignDeviceToGroupDocument, GetDeviceGroupsInfoDocument, type Query, DeleteDeviceDocument } from "@/generated/graphql"
+import type { AssignDeviceToGroupMutation, DeviceGroup, Device, DeleteDeviceMutation, DeleteDeviceMutationVariables } from "@/generated/graphql"
 
 import SvgIcon, { IconType } from "@/components/SvgIcon.vue"
 
 import { extractCssClass, pickCssClass } from "@/utils"
+
+const emit = defineEmits<{
+    (e: "refetchDeviceGroups"): void
+}>()
 
 const selectedDevice = defineModel<Device>()
 
@@ -60,6 +102,8 @@ const { accountId } = useUserStore()
 const showAssignDialog = ref(false)
 const selectedGroup = ref<number | string>()
 const fetching = ref(false)
+const showDeleteDeviceDialog = ref<boolean>(false)
+const loadingDeleteGroup = ref<boolean>(false)
 
 const deviceGroupsResult = useQuery<Query>({
     query: GetDeviceGroupsInfoDocument,
@@ -67,6 +111,28 @@ const deviceGroupsResult = useQuery<Query>({
         accountId,
     },
 })
+
+const deleteDeviceMutation = useMutation<DeleteDeviceMutation, DeleteDeviceMutationVariables>(DeleteDeviceDocument)
+const deleteDevice = () => {
+    loadingDeleteGroup.value = true
+    deleteDeviceMutation.executeMutation({
+        accountId: accountId!,
+        deviceId: selectedDevice.value?.id as string,
+    }).then(({ data, error }: OperationResult<DeleteDeviceMutation>) => {
+        console.error(error);
+        loadingDeleteGroup.value = false
+        if (error == null) {   
+            //@ts-ignore
+            toast(`Successfully DELETED Device "${data?.deleteDevice.name}"`, {
+                cardProps: {
+                    color: "error",
+                },
+            })
+        }
+        emit('refetchDeviceGroups')
+        showDeleteDeviceDialog.value = false
+    })
+}
 
 const deviceGroups = computed<Array<DeviceGroup>>(() => deviceGroupsResult.data.value?.account.deviceGroups ?? [])
 const assignDeviceToGroupMutation = useMutation<AssignDeviceToGroupMutation>(AssignDeviceToGroupDocument)

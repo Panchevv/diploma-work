@@ -1,0 +1,6 @@
+mutation deleteDevice($accountId: String!, $deviceId: String!) {
+  deleteDevice(accountId: $accountId, deviceId: $deviceId) {
+    id
+    name
+  }
+}

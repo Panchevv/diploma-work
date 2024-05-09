@@ -11,7 +11,8 @@
 <FixedWidthScrollableTable width="100%" body-height="400px" :class="extractCssClass('group-table', $style)">
     <template #head>
         <tr>
-            <colgroup> <col /> <col /> <col /> <col /> </colgroup>
+            <colgroup> <col /> <col /> <col /> <col /> <col /> </colgroup>
+            <th></th>
             <th></th>
             <th>Name</th>
             <th>Device ID</th>
@@ -19,7 +20,7 @@
     </template>
     <template #body>
         <tr v-for="device in filteredCompanyData" :key="device.id">
-            <colgroup> <col /> <col /> </colgroup>
+            <colgroup> <col /> <col /> <col /> <col /> <col /> </colgroup>
             <td>
                 <v-radio-group v-model="selectedDeviceId" hide-details>
                     <v-radio :value="device.id" />

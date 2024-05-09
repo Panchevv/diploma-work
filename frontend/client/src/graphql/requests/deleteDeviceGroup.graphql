@@ -1,0 +1,6 @@
+mutation deleteDeviceGroup($accountId: String!, $groupId: String!) {
+  deleteDeviceGroup(accountId: $accountId, groupId: $groupId) {
+    id
+    name
+  }
+}
