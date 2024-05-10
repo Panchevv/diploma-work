@@ -1,0 +1,28 @@
+mutation editThreshold(
+  $accountId: String!
+  $id: ID!
+  $name: String!
+  $groupIds: [String!]
+  $measurementType: MeasurementType!
+  $operator: ThresholdOperator!
+  $value: Float!
+) {
+  editThreshold(
+    accountId: $accountId
+    id: $id
+    request: {
+      name: $name
+      groupIds: $groupIds
+      measurementType: $measurementType
+      operator: $operator
+      value: $value
+    }
+  ) {
+    id
+    name
+    groupIds
+    measurementType
+    operator
+    value
+  }
+}

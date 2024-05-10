@@ -1,0 +1,5 @@
+mutation deleteThreshold($accountId: String!, $id: ID!) {
+  deleteThreshold(accountId: $accountId, id: $id) {
+    id
+  }
+}

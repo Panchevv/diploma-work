@@ -1,0 +1,16 @@
+query getThresholds($id: ID!) {
+  account(id: $id) {
+    id
+    name
+    thresholds {
+      id
+      name
+      groupIds
+      measurementType
+      operator
+      value
+      modifiedAt
+      createdAt
+    }
+  }
+}

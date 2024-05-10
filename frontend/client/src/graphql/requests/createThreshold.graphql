@@ -1,0 +1,26 @@
+mutation createThreshold(
+  $accountId: String!
+  $name: String!
+  $groupIds: [String!]
+  $measurementType: MeasurementType!
+  $operator: ThresholdOperator!
+  $value: Float!
+) {
+  createThreshold(
+    accountId: $accountId
+    request: {
+      name: $name
+      groupIds: $groupIds
+      measurementType: $measurementType
+      operator: $operator
+      value: $value
+    }
+  ) {
+    id
+    name
+    groupIds
+    measurementType
+    operator
+    value
+  }
+}
