@@ -1,0 +1,32 @@
+query getNotificationHistory(
+  $groupId: ID!
+  $accountId: ID!
+  $deviceId: ID
+  $last: ID
+  $pageSize: Int
+) {
+  account(id: $accountId) {
+    id
+    deviceGroup(id: $groupId) {
+      id
+      notificationHistory(
+        deviceId: $deviceId
+        last: $last
+        pageSize: $pageSize
+      ) {
+        id
+        deviceId
+        threshold {
+          id
+          thresholdName
+          measurementType
+          measurementValue
+          operator
+          threshold
+        }
+        seenAt
+        when
+      }
+    }
+  }
+}
