@@ -5,7 +5,7 @@ import SensorsView from "@/views/SensorsView.vue"
 // import ReportsView from "@/views/ReportsView.vue"
 import NrfCloudView from "@/views/NrfCloudView.vue"
 // import NotificationsView from "@/views/NotificationsView.vue"
-// import AgentsView from "@/views/AgentsView.vue"
+import ThresholdsView from "@/views/ThresholdsView.vue"
 import { type App } from "vue"
 import { useUserStore } from "@/stores/UserStore"
 
@@ -49,11 +49,11 @@ const createRouter = (app: App) => {
                     hideNavbar: true,
                 },
             },
-            // {
-            //     path: "/thresholds",
-            //     name: "thresholds",
-            //     component: ThresholdsView,
-            // },
+            {
+                path: "/thresholds",
+                name: "thresholds",
+                component: ThresholdsView,
+            },
         ],
     })
 

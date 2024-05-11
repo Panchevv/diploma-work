@@ -47,6 +47,7 @@ public class ThresholdServiceImpl implements ThresholdService {
         entity.setType(request.getMeasurementType());
         entity.setValue(request.getValue());
         entity.setCreatedAt(OffsetDateTime.now());
+        entity.setAccountId(request.getAccountId());
         Threshold persistedThreshold = MAPPER.map(this.repository.save(entity));
 
         persistedThreshold.setGroupIds(this.persistThresholdGroups(request.getGroupIds(), persistedThreshold.getId()));
@@ -73,8 +74,8 @@ public class ThresholdServiceImpl implements ThresholdService {
     @Transactional
     public Threshold removeThreshold(UUID id) {
         ThresholdEntity entity = this.repository.findById(id).orElseThrow();
-        this.repository.delete(entity);
         this.thresholdGroupRepository.deleteAll(this.thresholdGroupRepository.findAllByThresholdId(entity.getId()));
+        this.repository.delete(entity);
         return MAPPER.map(entity);
     }
 

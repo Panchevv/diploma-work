@@ -82,7 +82,7 @@
                 </div>
             </div>
             <v-progress-linear v-if="fetching" class="flex-0-1 mt-1" />
-            <div v-if="!firstFetch && (getThresholds.data.value?.account.thresholds.length !== undefined && getThresholds.data.value?.account.thresholds.length !== 0)" style="margin-top: 40px; width: 92vw;display: flex; justify-content: center;">
+            <div v-if="!firstFetch && (getThresholds.data.value?.account.thresholds?.length !== undefined && getThresholds.data.value?.account.thresholds.length !== 0)" style="margin-top: 40px; width: 92vw;display: flex; justify-content: center;">
                 <div :class="pickCssClass('search-input-container', $style)">
                     <v-text-field
                         v-model.trim="searchQuery"
@@ -98,9 +98,9 @@
                     <div v-for="threshold in paginatedThresholds" :key="threshold.id" :class="extractCssClass('card', $style)">
                         <h2 :class="extractCssClass('card__title', $style)" style="display: flex; justify-content: flex-end; height: auto;">
                             <span style="flex-grow:10; margin-left:5px; text-align: center; ">{{ threshold.name }}</span>
-                            <div v-if="editFormVisible && selectedThreshold === threshold" :class="extractCssClass('card__body', $style)">
+                            <div>
                                 <v-dialog v-model="editThresholdDialog" persistent width="420">
-                                    <v-card>
+                                    <v-card style="padding: 1.5rem; align-items: center;">
                                         <div style="display: flex; justify-content: center;">
                                             <span style="font-weight: bold; font-size: large" class="mt-3"> Edit Threshold</span>
                                         </div>
@@ -143,8 +143,8 @@
                                             </div>
                                             <v-card-actions style="justify-content: center;">
                                                 <v-btn
-                                                    :disabled="editThresholdButtonDisabled || getThresholds.fetching.value"
-                                                    :loading="loadingThreshold"
+                                                    :disabled="!thresholdName"
+                                                    :loading="loadingEditThreshold"
                                                     style="background-color: #707cd4"
                                                     color="white"
                                                     variant="text"
@@ -153,12 +153,10 @@
                                                     Save
                                                 </v-btn>
                                                 <v-btn
-                                                    :disabled="fetching"
-                                                    type="button"
                                                     color="primary-darken-1"
                                                     style="border: 1px solid #707cd4 "
                                                     variant="text"
-                                                    @click="clearForm">
+                                                    @click="clearForm; editThresholdDialog = false;">
                                                     Cancel
                                                 </v-btn>
                                             </v-card-actions>
@@ -167,9 +165,9 @@
                                 </v-dialog>
                             </div>
 
-                            <v-menu v-if="!isEditThreshold || selectedThresholdId !== threshold.id" open-on-click>
+                            <v-menu open-on-click>
                                 <template #activator="{ props: activatorProps }">
-                                    <v-btn :loading="(loadingEditThreshold && isEditThreshold && selectedThresholdId === threshold.id) || (loadingDeleteThreshold && selectedThresholdId === threshold.id)" variant="text" style="flex-grow: 1;position: absolute; top:1px" v-bind="activatorProps">
+                                    <v-btn :loading="selectedThresholdId === threshold.id ? loadingDeleteThreshold : false" :disabled="editThresholdDialog" variant="text" style="flex-grow: 1;position: absolute; top:1px" v-bind="activatorProps">
                                         <SvgIcon class="icon-white"  :type="IconType.MATERIAL" category="round" name="more_vert" alt="menu" />
                                     </v-btn>
                                 </template>
@@ -189,16 +187,16 @@
                             </v-menu>
                         </h2>
                         <span style="font-size: 14px; color: grey">Name: </span>
-                        <span style="font-size: 17px; font-weight: bold;">{{ threshold.threshold.name }}</span>
+                        <span style="font-size: 17px; font-weight: bold;">{{ threshold.name }}</span>
                         <br />
                         <span style="font-size: 14px; color: grey">Active For: </span>
-                        <span style="font-size: 17px; font-weight: bold;">{{ selectedGroupNames(threshold.threshold.groupIds).join(', ') }}</span>
+                        <span style="font-size: 17px; font-weight: bold;">{{ selectedGroupNames(threshold.groupIds).join(', ') }}</span>
                         <br />
                         <span style="font-size: 13px; color: grey">Measurement Type: </span>
-                        <span style="font-size: 15px; font-weight: bold;">{{ getMeasurementType(threshold.threshold?.measurementType) }}</span>
+                        <span style="font-size: 15px; font-weight: bold;">{{ getMeasurementType(threshold.measurementType) }}</span>
                         <br />
                         <span style="font-size: 13px; color: grey">Notify Upon: </span>
-                        <span style="font-size: 15px; font-weight: bold;">{{ getOperatorMessage(threshold.threshold?.operator) }} {{ threshold.threshold?.value }} {{ getMeasurementUnit(threshold.threshold?.measurementType) }}</span>
+                        <span style="font-size: 15px; font-weight: bold;">{{ getOperatorMessage(threshold.operator) }} {{ threshold.value }} {{ threshold.measurementType !== null ? getMeasurementUnit(threshold.measurementType) : '' }}</span>
                     </div>
                 </div>
             </div>
@@ -289,8 +287,8 @@ const hasThresholds = computed(() =>  filteredThresholds.value.length !== 0)
 const thresholds = computed(() => getThresholds.data.value?.account.thresholds)
 const fetching = computed(() => getThresholds.fetching.value)
 const searchQuery = ref('');
-const isEditThreshold = ref<boolean>(false)
 const addThresholdDialog = ref<boolean>(false)
+const editThresholdDialog = ref<boolean>(false)
 const thresholdName = ref<string>("")
 const editedThreshold = ref<string>("")
 const loadingEditThreshold = ref<boolean>(false)
@@ -306,8 +304,22 @@ const editFormVisible = ref(false)
 const selectedThreshold = ref('')
 const validGroups = ref<string[]>([])
 const invalidGroups = ref<string[]>([])
+const thresholdForm = ref<any>(null);
+const editThresholdForm = ref<any>(null);
 
 const { deviceGroupsListItems } = useDeviceGroupsInfo()
+
+const measurementUnits = {
+    BATTERY_VOLTAGE: "Millivolts",
+    AIR_PRESSURE: "kPa",
+    HUMIDITY: "%",
+    TEMPERATURE: "°C",
+    RSRP: "dBm",
+} as const;
+
+const getMeasurementUnit = (measurementType: MeasurementType): string => {
+    return measurementUnits[measurementType] ?? '';
+};
 
 const selectedGroupNames = (groupIds: any) => {
     return groupIds.map((selectedGroupId: string | number) => {
@@ -406,8 +418,8 @@ watchEffect(() => {
 })
 
 const clearForm = () => {
-    addThresholdForm.value = false;
-    editFormVisible.value = false;
+    addThresholdDialog.value = false;
+    editThresholdDialog.value = false;
     thresholdName.value = "";
     groupsNames.value = [];
     selectedMeasurementType.value = undefined;
@@ -417,12 +429,12 @@ const clearForm = () => {
 
 const editThresholdFormValues = (threshold: any) => {
     selectedThreshold.value = threshold
-    thresholdName.value = threshold.threshold.name
-    groupsNames.value = selectedGroupNames(threshold.threshold.groupIds)
-    selectedMeasurementType.value = getMeasurementType(threshold.threshold.measurementType)
-    selectedMeasurementOperator.value = getOperatorMessage(threshold.threshold.operator)
-    measurementValue.value = threshold.threshold.value
-    editFormVisible.value = true
+    thresholdName.value = threshold.name
+    groupsNames.value = selectedGroupNames(threshold.groupIds)
+    selectedMeasurementType.value = getMeasurementType(threshold.measurementType)
+    selectedMeasurementOperator.value = getOperatorMessage(threshold.operator)
+    measurementValue.value = threshold.value
+    editThresholdDialog.value = true
 }
 
 watchEffect(() => {
@@ -548,7 +560,7 @@ const createThreshold = () => {
         getThresholds.executeQuery({ requestPolicy: 'network-only' })
 
         //@ts-ignore
-        toast(`Successfully CREATED Threshold "${data?.createThreshold.threshold.name}"`, {
+        toast(`Successfully CREATED Threshold "${data?.createThreshold.name}"`, {
             cardProps: {
                 color: "success",
             },
@@ -578,9 +590,10 @@ const editThreshold = (thresholdId: string) => {
             loadingThreshold.value = false         
             return
         }
-        editFormVisible.value = false
+        getThresholds.executeQuery({ requestPolicy: 'network-only' })
+        editThresholdDialog.value = false
         //@ts-ignore
-        toast(`Successfully EDITED Threshold "${data?.editThreshold.threshold.name}"`, {
+        toast(`Successfully EDITED Threshold "${data?.editThreshold.name}"`, {
             cardProps: {
                 color: "warning",
             },
@@ -598,16 +611,17 @@ const deleteThreshold = (threshold: any) => {
     loadingDeleteThreshold.value = true         
     deleteThresholdMutation.executeMutation({
         accountId: accountId?.value!,
-        id: threshold.id,
+        id: threshold,
     }).then(({ error }: OperationResult<DeleteThresholdMutation>) => {
         if (error) {                        
             loadingDeleteThreshold.value = false         
             return
         }
+        confirmThresholdDelete.value = false
         getThresholds.executeQuery({ requestPolicy: 'network-only' })
 
         //@ts-ignore
-        toast(`Successfully DELETED Threshold "${threshold.threshold.name}"`, {
+        toast(`Successfully DELETED Threshold "${threshold.name}"`, {
             cardProps: {
                 color: "error",
             },
