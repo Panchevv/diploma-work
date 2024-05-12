@@ -4,7 +4,7 @@ import AccountCreationView from "@/views/AccountCreationView.vue"
 import SensorsView from "@/views/SensorsView.vue"
 // import ReportsView from "@/views/ReportsView.vue"
 import NrfCloudView from "@/views/NrfCloudView.vue"
-// import NotificationsView from "@/views/NotificationsView.vue"
+import NotificationsView from "@/views/NotificationsView.vue"
 import ThresholdsView from "@/views/ThresholdsView.vue"
 import { type App } from "vue"
 import { useUserStore } from "@/stores/UserStore"
@@ -28,11 +28,11 @@ const createRouter = (app: App) => {
             //     name: "history",
             //     component: ReportsView,
             // },
-            // {
-            //     path: "/notifications/:id?/:name?/:fromBeehive?",
-            //     name: "notifications",
-            //     component: NotificationsView,
-            // },
+            {
+                path: "/notifications/:id?/:name?/:fromBeehive?",
+                name: "notifications",
+                component: NotificationsView,
+            },
             {
                 path: "/account-create",
                 name: "accountCreation",

@@ -35,6 +35,7 @@ import ExpandMoreRound from "@material-design-icons/svg/round/expand_more.svg"
 import ExpandLessRound from "@material-design-icons/svg/round/expand_less.svg"
 import WarningAmberRound from "@material-design-icons/svg/round/warning_amber.svg"
 import ManageAccountsFilled from "@material-design-icons/svg/filled/manage_accounts.svg"
+import ArrowBackFilled  from "@material-design-icons/svg/filled/arrow_back.svg"
 /**
  * Object keys correspond to the names found [here](https://marella.me/material-design-icons/demo/svg/)
  **/
@@ -55,6 +56,7 @@ export const materialIcons: MaterialIconsType = {
         'people': PeopleFilled,
         'add_group': GroupAddFilled,
         'manage_accounts': ManageAccountsFilled,
+        'back': ArrowBackFilled,
     },
     outlined: {
         'chevron_left': ChevronLeftOutlined,

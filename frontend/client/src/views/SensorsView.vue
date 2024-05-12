@@ -382,7 +382,7 @@ const deleteDeviceGroup = async (selectedGroupId: any) => {
         loadingDeleteGroup.value = false
         if (error == null) {   
             //@ts-ignore
-            toast(`${formatTranslation(t, `beehive.pop_up_notifications.delete_group`)}"${data?.deleteDeviceGroup.name}"`, {
+            toast(`Successfully DELETED Group "${data?.deleteDeviceGroup.name}"`, {
                 cardProps: {
                     color: "success",
                 },

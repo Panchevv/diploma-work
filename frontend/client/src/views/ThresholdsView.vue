@@ -186,17 +186,24 @@
                                 </v-list>
                             </v-menu>
                         </h2>
-                        <span style="font-size: 14px; color: grey">Name: </span>
-                        <span style="font-size: 17px; font-weight: bold;">{{ threshold.name }}</span>
-                        <br />
-                        <span style="font-size: 14px; color: grey">Active For: </span>
-                        <span style="font-size: 17px; font-weight: bold;">{{ selectedGroupNames(threshold.groupIds).join(', ') }}</span>
-                        <br />
-                        <span style="font-size: 13px; color: grey">Measurement Type: </span>
-                        <span style="font-size: 15px; font-weight: bold;">{{ getMeasurementType(threshold.measurementType) }}</span>
-                        <br />
-                        <span style="font-size: 13px; color: grey">Notify Upon: </span>
-                        <span style="font-size: 15px; font-weight: bold;">{{ getOperatorMessage(threshold.operator) }} {{ threshold.value }} {{ threshold.measurementType !== null ? getMeasurementUnit(threshold.measurementType) : '' }}</span>
+                        <section style="padding: 15px;">
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-size: 14px; color: grey;">Name: </span>
+                                <span style="font-size: 17px; font-weight: bold;">{{ threshold.name }}</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-size: 14px; color: grey;">Active For: </span>
+                                <span style="font-size: 17px; font-weight: bold;">{{ selectedGroupNames(threshold.groupIds).join(', ') }}</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-size: 13px; color: grey;">Measurement Type: </span>
+                                <span style="font-size: 15px; font-weight: bold;">{{ getMeasurementType(threshold.measurementType) }}</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="font-size: 13px; color: grey;">Notify Upon: </span>
+                                <span style="font-size: 15px; font-weight: bold;">{{ getOperatorMessage(threshold.operator) }} {{ threshold.value }} {{ threshold.measurementType !== null ? getMeasurementUnit(threshold.measurementType) : '' }}</span>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
@@ -460,19 +467,7 @@ window.addEventListener('resize', () => {
 });
 
 function calculateItemsPerPage() {
-    const screenWidth = window.innerWidth;
-
-    if (screenWidth <= 1280) {
-        return 2;
-    } else if (screenWidth <= 1650) {
-        return 4;
-    } else if (screenWidth <= 1900) {
-        return 6;
-    } else if (screenWidth >= 2000) {
-        return 15;
-    } else {
-        return 1; 
-    }
+    return 8;
 }
 
 const totalThresholds = computed(() => filteredThresholds.value.length || 0);
@@ -751,14 +746,14 @@ const toolbarItems = computed<Array<ToolbarItem>>(() => [
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 12em;
-    width: 100%;
-    max-width: 23%;
-    min-width: 22.5em;
+    height: 13em;
+    width: 17vw;
+    min-width: 230px;
     border: none;
     border-radius: 10px;
     box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
     background-color: white;
+    overflow: hidden;
 
     @media only screen and (max-width: 601px) { 
         min-width: 22.5em;
@@ -779,7 +774,6 @@ const toolbarItems = computed<Array<ToolbarItem>>(() => [
     }
 
     &__body {
-        flex: 1 0 auto;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -896,4 +890,4 @@ const toolbarItems = computed<Array<ToolbarItem>>(() => [
             display: none;
         }
     }
-</style>(: { name: string; }): { createdAt: string | number | Date; }: { createdAt: string | number | Date; }(: any)(: any)(: any)(: any)(: any)(: any)(: any)(: any): { createdAt: string | number | Date; }: { createdAt: string | number | Date; }(: { id: string | number; })(: { name: any; })(: { name: string; })(: any)(: any)(: any)(: any)(: any)(: any)(: any)
+</style>
