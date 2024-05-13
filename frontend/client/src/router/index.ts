@@ -2,7 +2,7 @@ import { createRouter as createVueRouter, createWebHistory } from "vue-router"
 import AccountSelectionView from "@/views/AccountSelectionView.vue"
 import AccountCreationView from "@/views/AccountCreationView.vue"
 import SensorsView from "@/views/SensorsView.vue"
-// import ReportsView from "@/views/ReportsView.vue"
+import ReportsView from "@/views/ReportsView.vue"
 import NrfCloudView from "@/views/NrfCloudView.vue"
 import NotificationsView from "@/views/NotificationsView.vue"
 import ThresholdsView from "@/views/ThresholdsView.vue"
@@ -23,11 +23,11 @@ const createRouter = (app: App) => {
                 name: "sensors",
                 component: SensorsView,
             },
-            // {
-            //     path: "/history/:id?/:groupId?/:selectedTab?/:measurementType?",
-            //     name: "history",
-            //     component: ReportsView,
-            // },
+            {
+                path: "/history/:id?/:groupId?/:selectedTab?/:measurementType?",
+                name: "history",
+                component: ReportsView,
+            },
             {
                 path: "/notifications/:id?/:name?/:fromBeehive?",
                 name: "notifications",

@@ -21,5 +21,7 @@ public interface MeasurementService {
 
     Optional<Measurement> getDeviceMeasurement(String deviceId, MeasurementType measurementType);
 
+    List<Measurement> getDeviceMeasurements(String deviceId);
+
     Optional<Connection<Measurement>> getDeviceMeasurementHistory(String deviceId, MeasurementType type, OffsetDateTime from, OffsetDateTime to, String fromId, int pageSize);
 }

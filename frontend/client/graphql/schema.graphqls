@@ -91,6 +91,7 @@ type Device {
     id: String!
     name: String
     measurement(type: MeasurementType): DeviceMeasurement
+    measurements: [DeviceMeasurement!]
 }
 
 type DeviceMeasurement {

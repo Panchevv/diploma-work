@@ -60,7 +60,7 @@ import { useUserStore } from '@/stores/UserStore';
 
 import SvgIcon, { IconType } from "@/components/SvgIcon.vue"
 import TheHeader, { ToolbarItemType, type ToolbarItem, DropdownItemType } from '@/components/TheHeader.vue';
-import {  GetNotificationHistoryDocument, type GetNotificationHistoryQuery, type GetNotificationHistoryQueryVariables, MeasurementType, type Maybe } from '@/generated/graphql';
+import {  GetNotificationHistoryDocument, type GetNotificationHistoryQuery, type GetNotificationHistoryQueryVariables, MeasurementType } from '@/generated/graphql';
 
 import { extractCssClass, pickCssClass } from '@/utils';
 import { useRoute, useRouter } from 'vue-router';

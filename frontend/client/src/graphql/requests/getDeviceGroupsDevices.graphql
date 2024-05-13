@@ -1,0 +1,14 @@
+query getDeviceGroupsDevices($accountId: ID!, $deviceGroupId: ID!) {
+  account(id: $accountId) {
+    id
+    name
+    deviceGroup(id: $deviceGroupId) {
+      id
+      name
+      devices {
+        id
+        name
+      }
+    }
+  }
+}

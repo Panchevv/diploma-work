@@ -1,0 +1,22 @@
+query getMeasurmentTypesBySensor(
+  $accountId: ID!
+  $deviceGroupId: ID!
+  $deviceId: ID!
+) {
+  account(id: $accountId) {
+    id
+    name
+    deviceGroup(id: $deviceGroupId) {
+      id
+      name
+      device(id: $deviceId) {
+        id
+        name
+        measurements {
+          id
+          type
+        }
+      }
+    }
+  }
+}

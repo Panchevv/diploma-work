@@ -1,0 +1,52 @@
+fragment DeviceMeasurementHistoryMeasurementFragment on Measurement {
+  id
+  deviceId
+  type
+  when
+  value
+}
+fragment DeviceMeasurementHistoryDeviceMeasurementFragment on DeviceMeasurement {
+  id
+  deviceId
+  type
+  when
+  value
+  history(search: { from: $from, to: $to }, first: $first, after: $after) {
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+    }
+    edges {
+      cursor
+      node {
+        ...DeviceMeasurementHistoryMeasurementFragment
+      }
+    }
+  }
+}
+fragment DeviceMeasurementHistoryDeviceFragment on Device {
+  id
+  measurement(type: $measurementType) {
+    ...DeviceMeasurementHistoryDeviceMeasurementFragment
+  }
+}
+fragment DeviceMeasurementHistoryAccountFragment on Account {
+  id
+  device(id: $deviceId) {
+    ...DeviceMeasurementHistoryDeviceFragment
+  }
+}
+query getDeviceMeasurementHistory(
+  $accountId: ID!
+  $deviceId: ID!
+  $measurementType: MeasurementType
+  $from: DateTime!
+  $to: DateTime
+  $first: Int!
+  $after: ID
+) {
+  account(id: $accountId) {
+    ...DeviceMeasurementHistoryAccountFragment
+  }
+}

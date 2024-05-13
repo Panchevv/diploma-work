@@ -1,0 +1,9 @@
+subscription subscribeDeviceMeasurements($token: String!) {
+  measurements(token: $token) {
+    id
+    deviceId
+    type
+    value
+    when
+  }
+}

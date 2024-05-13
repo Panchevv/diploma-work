@@ -11,6 +11,7 @@ import org.dataloader.DataLoader;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -33,5 +34,13 @@ public class DataFetchersDelegateDeviceImpl implements DataFetchersDelegateDevic
         return this.measurementService.getDeviceMeasurement(origin.getId(), MAPPER.map(type))
                 .map(current -> MAPPER.mapDeviceMeasurement(origin.getId(), current))
                 .orElse(null);
+    }
+
+    @Override
+    public List<DeviceMeasurement> measurements(DataFetchingEnvironment dataFetchingEnvironment, Device origin) {
+        return this.measurementService.getDeviceMeasurements(origin.getId())
+                .stream()
+                .map(current -> MAPPER.mapDeviceMeasurement(origin.getId(), current))
+                .toList();
     }
 }

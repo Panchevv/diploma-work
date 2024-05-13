@@ -91,6 +91,21 @@ public class MeasurementAdapterImpl implements MeasurementAdapter {
     }
 
     @Override
+    public List<Measurement> getDeviceMeasurements(String deviceId) {
+        return Optional.ofNullable(
+                        this.measurementGrpc.getLastMeasurements(
+                                MeasurementGrpc.GetLastMeasurementsRequest.newBuilder()
+                                        .setDeviceId(StringValue.of(deviceId))
+                                        .build()
+                        )
+                )
+                .stream()
+                .flatMap(r -> r.getMeasurementsList().stream())
+                .map(current -> MAPPER.map(deviceId, current))
+                .toList();
+    }
+
+    @Override
     public Optional<Connection<Measurement>> getDeviceMeasurementHistory(String deviceId, MeasurementType type, OffsetDateTime from, OffsetDateTime to, String fromId, int pageSize) {
         Common.Pagination.Builder paginationBuilder = Common.Pagination.newBuilder().setSize(pageSize);
         if (fromId != null) {

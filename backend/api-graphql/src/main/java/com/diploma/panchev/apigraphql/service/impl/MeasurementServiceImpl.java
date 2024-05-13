@@ -47,6 +47,11 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
+    public List<Measurement> getDeviceMeasurements(String deviceId) {
+        return measurementAdapter.getDeviceMeasurements(deviceId);
+    }
+
+    @Override
     public Optional<Connection<Measurement>> getDeviceMeasurementHistory(String deviceId, MeasurementType type, OffsetDateTime from, OffsetDateTime to, String fromId, int pageSize) {
         return measurementAdapter.getDeviceMeasurementHistory(deviceId, type, from, to, fromId, pageSize);
     }
