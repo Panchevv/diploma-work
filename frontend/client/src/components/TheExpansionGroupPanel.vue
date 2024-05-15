@@ -20,13 +20,14 @@
     </template>
     <template #body>
         <tr v-for="device in filteredCompanyData" :key="device.id">
-            <colgroup> <col /> <col /> <col /> <col /> <col /> </colgroup>
             <td>
                 <v-radio-group v-model="selectedDeviceId" hide-details>
                     <v-radio :value="device.id" />
                 </v-radio-group>
             </td>
+            <td style="padding-left: 50px;"></td>
             <td>{{ device?.name }}</td>
+            <td style="padding-left: 150px;"></td>
             <td>{{ device?.id }}</td>
         </tr>
     </template>
@@ -118,11 +119,11 @@ const filteredCompanyData = computed<Array<Device>>(() => {
             }
 
             &:nth-child(2) {
-                width: 30%;
+                width: 5%;
             }
 
             &:nth-child(3) {
-                width: 35%;
+                width: 25%;
             }
 
             &:nth-child(4) {

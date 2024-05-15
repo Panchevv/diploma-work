@@ -33,7 +33,7 @@ const attrs = useAttrs()
 
         tr {
             display: table;
-            table-layout: fixed;
+            table-layout: auto;
         }
 
         tbody {

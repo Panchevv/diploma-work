@@ -182,7 +182,17 @@ const chartData = computed<ChartData<"line">>(() => {
             return accumulator
         }, {})
 
-    const labels = measurementsTimes
+    const dateOptions = { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+    };
+    const labels = measurementsTimes.map((when: Date) => {
+        const dateString = when.toLocaleDateString();
+        const timeString = when.toLocaleTimeString(undefined, dateOptions);
+        return `${dateString} ${timeString}`;
+    });
+
 
     const data: ChartData<"line"> = measurements.length > 0 ? {
         labels,

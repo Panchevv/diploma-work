@@ -182,7 +182,7 @@ $menu-items-color: rgba(var(--v-theme-on-primary));
         text-decoration: none;
 
         &__text {
-            font-size: .875rem;
+            font-size: 1.2rem;
             font-weight: 500;
             white-space: nowrap;
             color: $menu-items-color;
@@ -207,6 +207,7 @@ $menu-items-color: rgba(var(--v-theme-on-primary));
 
     li {
         list-style: none;
+        padding: 20px 0;
     }
 
     header {

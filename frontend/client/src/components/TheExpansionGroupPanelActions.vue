@@ -1,10 +1,51 @@
 <template>
 <div class="d-flex justify-space-between gap-5" style="padding: 0 16px;">
     <span class="d-flex flex-column align-center">
-        <v-btn disabled size="small" class="v-btn--icon">
-            <SvgIcon :type="IconType.MATERIAL" category="round" name="edit" alt="edit icon" :class="pickCssClass('beehive-btn-icon', $style)" />
-        </v-btn>
-        <span :class="pickCssClass('beehive-btn-text', $style)">Edit Name</span>
+        <v-dialog v-model="renameDeviceDialog" persistent width="520">
+            <template #activator="{ props: activatorProps }">
+                <v-btn v-bind="activatorProps" :disabled="selectedDevice == null" size="small" class="v-btn--icon" @click="editedName = selectedDevice?.name ?? ''">
+                    <SvgIcon :type="IconType.MATERIAL" category="round" name="edit" alt="edit icon" :class="pickCssClass('beehive-btn-icon', $style)" />
+                </v-btn>
+                <span :class="pickCssClass('beehive-btn-text', $style)">Edit Name</span>
+            </template>
+            <v-card style="padding: 1.5rem; align-items: center;">
+                <v-card-title>
+                    <p style="text-align: center; white-space: wrap;" class="text-h6">Rename Device <span style="color: black;  font-weight: bolder;">{{ selectedDevice?.name }}</span></p>
+                    <hr class=" mb-5 w-200" />
+                </v-card-title>
+                <div style="width: 300px; margin-top: 5px">
+                    <v-text-field 
+                        v-model="editedName" 
+                        variant="underlined" 
+                        prepend-inner-icon="mdi-pencil"
+                        class="w-100 mb-5"
+                        label="New Name" />
+                </div>
+                <v-card-actions style="width: 60%;display: flex; justify-content: space-evenly">
+                    <v-btn
+                        type="button"
+                        style="background-color: #707cd4"
+                        color="white"
+                        variant="text"
+                        class="w-50"
+                        :loading="loadingRenameDevice" 
+                        :disabled="renameDeviceButtonDisabled"
+                        @click="renameDevice">
+                        Save
+                    </v-btn>
+                    <v-btn
+                        type="button"
+                        color="primary-darken-1"
+                        style="border: 1px solid #707cd4 "
+                        variant="text"
+                        :disabled="loadingRenameDevice"
+                        @click="renameDeviceDialog = false; editedName = ''">
+                        Cancel
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
     </span>
     <span class="d-flex flex-column align-center">
         <v-dialog v-model="showDeleteDeviceDialog" :class="extractCssClass('group-select-dialog', $style)">
@@ -85,8 +126,8 @@ import { useMutation, useQuery, type OperationResult, type AnyVariables } from "
 
 import { useUserStore } from "@/stores/UserStore"
 
-import { AssignDeviceToGroupDocument, GetDeviceGroupsInfoDocument, type Query, DeleteDeviceDocument } from "@/generated/graphql"
-import type { AssignDeviceToGroupMutation, DeviceGroup, Device, DeleteDeviceMutation, DeleteDeviceMutationVariables } from "@/generated/graphql"
+import { AssignDeviceToGroupDocument, GetDeviceGroupsInfoDocument, type Query, DeleteDeviceDocument, UpdateDeviceDocument } from "@/generated/graphql"
+import type { AssignDeviceToGroupMutation, DeviceGroup, Device, DeleteDeviceMutation, DeleteDeviceMutationVariables, UpdateDeviceMutation, UpdateDeviceMutationVariables } from "@/generated/graphql"
 
 import SvgIcon, { IconType } from "@/components/SvgIcon.vue"
 
@@ -104,6 +145,13 @@ const selectedGroup = ref<number | string>()
 const fetching = ref(false)
 const showDeleteDeviceDialog = ref<boolean>(false)
 const loadingDeleteGroup = ref<boolean>(false)
+const renameDeviceDialog = ref<boolean>(false)
+const editedName = ref<string>("")
+const loadingRenameDevice = ref<boolean>(false)
+
+const renameDeviceButtonDisabled = computed(() => {
+    return !editedName.value || (editedName.value === selectedDevice.value?.name)
+})
 
 const deviceGroupsResult = useQuery<Query>({
     query: GetDeviceGroupsInfoDocument,
@@ -111,6 +159,32 @@ const deviceGroupsResult = useQuery<Query>({
         accountId,
     },
 })
+
+const renameDeviceMutation = useMutation<UpdateDeviceMutation, UpdateDeviceMutationVariables>(UpdateDeviceDocument)
+const renameDevice = () => {
+    loadingRenameDevice.value = true
+    renameDeviceMutation.executeMutation({
+        accountId: accountId! as string,
+        deviceId: selectedDevice.value?.id as string,
+        name: editedName.value,
+    }).then(({ data, error }: OperationResult<UpdateDeviceMutation>) => {
+        if (error) {                        
+            loadingRenameDevice.value = false
+            return
+        }
+        //@ts-ignore
+        toast(`Successfully RENAMED Device "${data?.updateDevice.name}"`, {
+            cardProps: {
+                color: "success",
+            },
+        })        
+        loadingRenameDevice.value = false
+        renameDeviceDialog.value = false
+    }).catch(() => {
+        loadingRenameDevice.value = false
+    })
+}
+
 
 const deleteDeviceMutation = useMutation<DeleteDeviceMutation, DeleteDeviceMutationVariables>(DeleteDeviceDocument)
 const deleteDevice = () => {
