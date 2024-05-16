@@ -23,7 +23,7 @@ import { useUserStore } from "@/stores/UserStore"
 import { useDeviceGroupsInfo } from "@/composables/useDeviceGroups"
 
 import { ToolbarItemType, type ToolbarItem, DropdownItemType } from "@/components/TheHeader.vue"
-import { MeasurementType, type Device, type GetDeviceGroupsDevicesQuery, type GetDeviceGroupsDevicesQueryVariables, GetDeviceGroupsDevicesDocument } from "@/generated/graphql"
+import { MeasurementType, type Device, type GetDeviceGroupsDevicesQuery, type GetDeviceGroupsDevicesQueryVariables, GetDeviceGroupsDevicesDocument, GetDeviceGroupsInfoDocument, type Query } from "@/generated/graphql"
 import { type DisplayableDevice } from "@/graphql/types"
 import { IconType } from "@/components/SvgIcon.vue"
 
@@ -34,20 +34,17 @@ import TheDeviceSensorHistoryContent from "@/components/TheDeviceSensorHistoryCo
 import { isDisplayableDevice } from "@/utils"
 import type { Maybe } from "graphql/jsutils/Maybe"
 import TheNotificationsButton from "@/components/TheNotificationsButton.vue"
+import { useGlobalStore } from "@/stores/GlobalStore"
+import { storeToRefs } from "pinia"
 
 const { accountId, tokenParsed, logout } = useUserStore()
 const router = useRouter()
 const route = useRoute()
 const selectedDeviceId = route.params.id
 const selectedGroupParam = route.params.group
-// const selectedDataMode = ref<string>('')
 const toastShown = ref<boolean>(false)
 
-const { selectedDeviceGroupInfo, deviceGroupsInfo, deviceGroupsListItems, fetching: deviceGroupsFetching } = useDeviceGroupsInfo()
-
-// const handleChangeMode = (changeMode: string) => {
-//     selectedDataMode.value = changeMode
-// };
+const { selectedDeviceGroupInfo, deviceGroupsListItems } = useDeviceGroupsInfo()
 
 const selectedDevice = ref<DisplayableDevice>()
 const selectedGroup = ref<MeasurementType>()
@@ -60,6 +57,26 @@ const selectedDeviceAndGroup = computed<SelectedDeviceAndGroup>({
         selectedDevice.value = value.device
         selectedGroup.value = value.group
     },
+})
+
+const { setSelectedDeviceGroupId } = useGlobalStore()
+const { selectedDeviceGroupId } = storeToRefs(useGlobalStore())
+
+const deviceGroupsResult = useQuery<Query>({
+    query: GetDeviceGroupsInfoDocument,
+    variables: {
+        accountId,
+    },
+})
+const deviceGroupsInfo = computed(() => {
+    return deviceGroupsResult.data.value?.account.deviceGroups ?? []
+})
+
+watchEffect(() => { 
+    if (deviceGroupsInfo.value !== undefined && deviceGroupsInfo.value.length !== 0){
+        if (selectedDeviceGroupId.value == null)
+            setSelectedDeviceGroupId(deviceGroupsInfo.value[0].id)        
+    }   
 })
 
 const getDeviceGroupsDevicesResult = useQuery<GetDeviceGroupsDevicesQuery, GetDeviceGroupsDevicesQueryVariables>({
@@ -161,7 +178,7 @@ const toolbarItems = computed<Array<ToolbarItem>>(() => [
             name: "people",
             alt: "people",
         },
-        loading: deviceGroupsFetching.value,
+        loading: deviceGroupsResult.fetching.value && (deviceGroupsResult.data?.value?.account?.deviceGroups?.length !== 0 && deviceGroupsResult.data?.value?.account?.deviceGroups !== undefined),
         name: selectedDeviceGroupInfo.value?.name ?? deviceGroupsInfo.value?.[0]?.name ?? "[no groups]",
         items: deviceGroupsListItems.value,
     },
