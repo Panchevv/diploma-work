@@ -8,6 +8,7 @@ import com.diploma.panchev.measurement.domain.entity.DeviceMeasurementEntity;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface MeasurementService {
@@ -16,4 +17,6 @@ public interface MeasurementService {
     Relay<DeviceMeasurementEntity> getMeasurementHistory(String deviceId, MeasurementType type, OffsetDateTime from, OffsetDateTime to, Long fromId, Integer pageSize);
 
     DeviceMeasurement createMeasurement(UUID accountId, UUID groupId, String deviceId, String messageId, Measurement measurement, OffsetDateTime when);
+
+    Optional<DeviceMeasurementEntity> getLastMeasurement(String deviceId, MeasurementType type);
 }

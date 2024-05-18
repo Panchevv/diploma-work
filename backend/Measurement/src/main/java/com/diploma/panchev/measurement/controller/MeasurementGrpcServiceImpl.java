@@ -22,14 +22,32 @@ public class MeasurementGrpcServiceImpl extends MeasurementServiceGrpc.Measureme
 
     @Override
     public void getLastMeasurements(MeasurementGrpc.GetLastMeasurementsRequest request, StreamObserver<MeasurementGrpc.GetLastMeasurementsResponse> responseObserver) {
-        responseObserver.onNext(
-                MeasurementGrpc.GetLastMeasurementsResponse.newBuilder()
-                        .addAllMeasurements(
-                                this.measurementService.getLastMeasurements(request.getDeviceId().getValue())
-                                        .stream().map(MAPPER::map).toList()
-                        )
-                        .build()
-        );
+        if (request.getTypeCount() > 0) {
+            responseObserver.onNext(
+                    MeasurementGrpc.GetLastMeasurementsResponse.newBuilder()
+                            .addAllMeasurements(
+                                    request.getTypeList()
+                                            .stream()
+                                            .map(MAPPER::map)
+                                            .flatMap(measurementType ->
+                                                    this.measurementService.getLastMeasurement(request.getDeviceId().getValue(), measurementType).stream()
+                                            )
+                                            .map(MAPPER::map)
+                                            .toList()
+                            )
+                            .build()
+            );
+        } else {
+            responseObserver.onNext(
+                    MeasurementGrpc.GetLastMeasurementsResponse.newBuilder()
+                            .addAllMeasurements(
+                                    this.measurementService.getLastMeasurements(request.getDeviceId().getValue())
+                                            .stream().map(MAPPER::map).toList()
+                            )
+                            .build()
+            );
+        }
+
         responseObserver.onCompleted();
     }
 

@@ -69,4 +69,9 @@ public class MeasurementServiceImpl implements MeasurementService {
         entity.setMessageId(messageId);
         return MAPPER.map(repository.save(entity));
     }
+
+    @Override
+    public Optional<DeviceMeasurementEntity> getLastMeasurement(String deviceId, MeasurementType type) {
+        return repository.findFirstByDeviceIdAndTypeOrderByCreatedAtDesc(deviceId, type);
+    }
 }
