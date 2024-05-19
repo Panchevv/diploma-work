@@ -10,7 +10,7 @@
                 <div>
                     <v-dialog v-model="addThresholdDialog" persistent width="420">
                         <template #activator="{ props: activatorProps }">
-                            <v-btn v-if="!fetching" v-bind="activatorProps" color="surface" class="v-btn--icon" @click="addThresholdDialog = true">
+                            <v-btn v-if="!fetching" v-bind="activatorProps" color="surface" class="v-btn--icon" @click="addThresholdDialog = true;">
                                 <SvgIcon :type="IconType.MATERIAL" category="round" name="add" alt="plus" />
                             </v-btn>
                             <span v-if="!fetching" :class="pickCssClass('add-btn-text', $style)">Add Threshold</span>
@@ -72,7 +72,7 @@
                                         color="primary-darken-1"
                                         style="border: 1px solid #707cd4 "
                                         variant="text"
-                                        @click="addThresholdDialog = false; thresholdName = ''">
+                                        @click="addThresholdDialog = false; clearForm()">
                                         Cancel
                                     </v-btn>
                                 </v-card-actions>
@@ -98,72 +98,7 @@
                     <div v-for="threshold in paginatedThresholds" :key="threshold.id" :class="extractCssClass('card', $style)">
                         <h2 :class="extractCssClass('card__title', $style)" style="display: flex; justify-content: flex-end; height: auto;">
                             <span style="flex-grow:10; margin-left:5px; text-align: center; ">{{ threshold.name }}</span>
-                            <div>
-                                <v-dialog v-model="editThresholdDialog" persistent width="420">
-                                    <v-card style="padding: 1.5rem; align-items: center;">
-                                        <div style="display: flex; justify-content: center;">
-                                            <span style="font-weight: bold; font-size: large" class="mt-3"> Edit Threshold</span>
-                                        </div>
-                                        <v-form ref="editThresholdForm">
-                                            <div class="d-flex mr-3 ml-3 mt-2 gap-3">
-                                                <v-text-field 
-                                                    v-model="thresholdName"
-                                                    variant="underlined"
-                                                    label="Threshold Name" />
-                                            </div>
-                                            <div class="d-flex mr-3 ml-3 mt-2 gap-3">
-                                                <v-combobox
-                                                    v-model="groupsNames"
-                                                    :items="allGroupNames"
-                                                    variant="underlined"
-                                                    multiple
-                                                    chips
-                                                    label="Activate For" />
-                                            </div>
-                                            <div class="d-flex mr-3 ml-3 mt-2 gap-3">
-                                                <v-select
-                                                    v-model="selectedMeasurementType"
-                                                    variant="underlined"
-                                                    label="Measurement Type"
-                                                    :items="allMeasurmentTypesNames" />
-                                            </div>
-                                            <div class="d-flex mr-3 ml-3 gap-3">
-                                                <v-select
-                                                    v-model="selectedMeasurementOperator"
-                                                    variant="underlined"
-                                                    style="width: 70%;"
-                                                    label="Operator"
-                                                    :items="allMeasurmentOperatorNames" />
-                                                <v-text-field
-                                                    v-model="measurementValue"
-                                                    variant="underlined"
-                                                    style="width: 30%;"
-                                                    label="Value"
-                                                    type="number" />
-                                            </div>
-                                            <v-card-actions style="justify-content: center;">
-                                                <v-btn
-                                                    :disabled="!thresholdName"
-                                                    :loading="loadingEditThreshold"
-                                                    style="background-color: #707cd4"
-                                                    color="white"
-                                                    variant="text"
-                                                    class="mr-4 w-50"
-                                                    @click="editThreshold(threshold.id)">
-                                                    Save
-                                                </v-btn>
-                                                <v-btn
-                                                    color="primary-darken-1"
-                                                    style="border: 1px solid #707cd4 "
-                                                    variant="text"
-                                                    @click="clearForm; editThresholdDialog = false;">
-                                                    Cancel
-                                                </v-btn>
-                                            </v-card-actions>
-                                        </v-form>
-                                    </v-card>
-                                </v-dialog>
-                            </div>
+
 
                             <v-menu open-on-click>
                                 <template #activator="{ props: activatorProps }">
@@ -206,6 +141,72 @@
                         </section>
                     </div>
                 </div>
+            </div>
+            <div>
+                <v-dialog v-model="editThresholdDialog" persistent width="420">
+                    <v-card style="padding: 1.5rem; align-items: center;">
+                        <div style="display: flex; justify-content: center;">
+                            <span style="font-weight: bold; font-size: large" class="mt-3"> Edit Threshold</span>
+                        </div>
+                        <v-form ref="editThresholdForm">
+                            <div class="d-flex mr-3 ml-3 mt-2 gap-3">
+                                <v-text-field 
+                                    v-model="thresholdName"
+                                    variant="underlined"
+                                    label="Threshold Name" />
+                            </div>
+                            <div class="d-flex mr-3 ml-3 mt-2 gap-3">
+                                <v-combobox
+                                    v-model="groupsNames"
+                                    :items="allGroupNames"
+                                    variant="underlined"
+                                    multiple
+                                    chips
+                                    label="Activate For" />
+                            </div>
+                            <div class="d-flex mr-3 ml-3 mt-2 gap-3">
+                                <v-select
+                                    v-model="selectedMeasurementType"
+                                    variant="underlined"
+                                    label="Measurement Type"
+                                    :items="allMeasurmentTypesNames" />
+                            </div>
+                            <div class="d-flex mr-3 ml-3 gap-3">
+                                <v-select
+                                    v-model="selectedMeasurementOperator"
+                                    variant="underlined"
+                                    style="width: 70%;"
+                                    label="Operator"
+                                    :items="allMeasurmentOperatorNames" />
+                                <v-text-field
+                                    v-model="measurementValue"
+                                    variant="underlined"
+                                    style="width: 30%;"
+                                    label="Value"
+                                    type="number" />
+                            </div>
+                            <v-card-actions style="justify-content: center;">
+                                <v-btn
+                                    :disabled="!thresholdName"
+                                    :loading="loadingEditThreshold"
+                                    style="background-color: #707cd4"
+                                    color="white"
+                                    variant="text"
+                                    class="mr-4 w-50"
+                                    @click="editThreshold(threshold.id)">
+                                    Save
+                                </v-btn>
+                                <v-btn
+                                    color="primary-darken-1"
+                                    style="border: 1px solid #707cd4 "
+                                    variant="text"
+                                    @click="clearForm(); editThresholdDialog = false;">
+                                    Cancel
+                                </v-btn>
+                            </v-card-actions>
+                        </v-form>
+                    </v-card>
+                </v-dialog>
             </div>
             <div v-if="!hasThresholds && !fetching" style="display: flex; justify-content: center; font-size: 30px; height: 75vh; align-items: center;"><span style="margin-bottom: 20vh;">No Thresholds.</span></div>
             <v-dialog v-model="confirmThresholdDelete" width="500" height="500">
