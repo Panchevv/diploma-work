@@ -8,7 +8,7 @@ public enum MeasurementType {
     HUMIDITY(2),
     AIR_PRESSURE(3),
     BATTERY_VOLTAGE(4),
-    RSRP(5);
+    RSRP(8);
 
     private final int databaseId;
 

@@ -118,6 +118,7 @@ public class ThresholdServiceImpl implements ThresholdService {
                 .map(this.repository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .filter(threshold -> threshold.getType().equals(measurement.getMeasurement().getType()))
                 .filter(threshold -> threshold.evaluate(measurement.getMeasurement().getValue()))
                 .map(threshold -> {
                     ThresholdHistoryEntity historyEntity = new ThresholdHistoryEntity();
